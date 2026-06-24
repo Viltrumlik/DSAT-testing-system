@@ -1,0 +1,42 @@
+# Core Django
+Django==6.0.3
+asgiref==3.11.1
+sqlparse==0.5.5
+tzdata==2025.3
+
+# REST API
+djangorestframework==3.16.1
+djangorestframework_simplejwt==5.5.1
+drf-spectacular==0.28.0
+PyJWT==2.11.0
+cryptography>=43.0.0
+django-cors-headers==4.9.0
+django-filter==25.2
+
+# Image handling
+Pillow==12.1.1
+
+# Question Bank PDF import — per-page text + embedded-image extraction
+PyMuPDF==1.27.2.3
+
+# Config
+python-dotenv==1.2.2
+google-auth==2.40.3
+requests==2.32.3
+
+# Production server
+gunicorn==23.0.0
+
+# Database (PostgreSQL)
+psycopg2-binary==2.9.10
+dj-database-url==2.3.0
+
+# Static file serving
+whitenoise==6.9.0
+
+# Admin theme
+django-jazzmin==3.0.1
+
+# Async jobs / queue (realtime fan-out, reminders, cleanup)
+celery==5.5.3
+redis==6.2.0

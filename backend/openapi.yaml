@@ -1,0 +1,6136 @@
+openapi: 3.0.3
+info:
+  title: MasterSAT LMS API
+  version: 1.0.0
+paths:
+  /api/access/grant/:
+    post:
+      operationId: access_grant_create
+      description: |-
+        POST /api/access/grant/
+        Body: { "userId": <int>, "subject": "math"|"english", "classroomId": <int|null> }
+      tags:
+      - access
+      responses:
+        '200':
+          description: No response body
+  /api/assessments/admin/attempts/{attempt_id}/:
+    get:
+      operationId: assessments_admin_attempts_retrieve
+      parameters:
+      - in: path
+        name: attempt_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - assessments
+      responses:
+        '200':
+          description: No response body
+  /api/assessments/admin/attempts/{attempt_id}/force-grade/:
+    post:
+      operationId: assessments_admin_attempts_force_grade_create
+      parameters:
+      - in: path
+        name: attempt_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - assessments
+      responses:
+        '200':
+          description: No response body
+  /api/assessments/admin/attempts/{attempt_id}/requeue/:
+    post:
+      operationId: assessments_admin_attempts_requeue_create
+      parameters:
+      - in: path
+        name: attempt_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - assessments
+      responses:
+        '200':
+          description: No response body
+  /api/assessments/admin/builder/telemetry/:
+    post:
+      operationId: assessments_admin_builder_telemetry_create
+      description: |-
+        Minimal telemetry ingestion endpoint for questions-console builder recovery events.
+        Best-effort counters only (Prometheus-exposed via assessments homework metrics endpoint).
+      tags:
+      - assessments
+      responses:
+        '200':
+          description: No response body
+  /api/assessments/admin/grading/metrics/:
+    get:
+      operationId: assessments_admin_grading_metrics_retrieve
+      description: |-
+        DB-derived grading metrics (broker-agnostic):
+        - "queue size" approximated by pending submitted attempts
+        - latency measured from submitted_at -> result.graded_at
+      tags:
+      - assessments
+      responses:
+        '200':
+          description: No response body
+  /api/assessments/admin/grading/metrics/prometheus/:
+    get:
+      operationId: assessments_admin_grading_metrics_prometheus_retrieve
+      description: |-
+        Prometheus scrape endpoint for grading/worker gauges.
+        Keep it dependency-free (mirrors realtime.prometheus pattern).
+      tags:
+      - assessments
+      responses:
+        '200':
+          description: No response body
+  /api/assessments/admin/homework/metrics/prometheus/:
+    get:
+      operationId: assessments_admin_homework_metrics_prometheus_retrieve
+      description: |-
+        Prometheus scrape endpoint for homework integrity counters.
+        Keep it dependency-free (mirrors other prometheus endpoints).
+      tags:
+      - assessments
+      responses:
+        '200':
+          description: No response body
+  /api/assessments/admin/questions/{id}/:
+    patch:
+      operationId: assessments_admin_questions_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - assessments
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: assessments_admin_questions_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - assessments
+      responses:
+        '204':
+          description: No response body
+  /api/assessments/admin/sets/:
+    get:
+      operationId: assessments_admin_sets_retrieve
+      tags:
+      - assessments
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: assessments_admin_sets_create
+      tags:
+      - assessments
+      responses:
+        '200':
+          description: No response body
+  /api/assessments/admin/sets/{id}/:
+    get:
+      operationId: assessments_admin_sets_retrieve_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - assessments
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: assessments_admin_sets_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - assessments
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: assessments_admin_sets_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - assessments
+      responses:
+        '204':
+          description: No response body
+  /api/assessments/admin/sets/{set_pk}/questions/:
+    post:
+      operationId: assessments_admin_sets_questions_create
+      parameters:
+      - in: path
+        name: set_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - assessments
+      responses:
+        '200':
+          description: No response body
+  /api/assessments/attempts/{attempt_id}/bundle/:
+    get:
+      operationId: assessments_attempts_bundle_retrieve
+      description: |-
+        Student-facing attempt bootstrap: return attempt + sanitized question list
+        (no correct answers), ordered by the per-attempt shuffle.
+      summary: Attempt bundle (attempt + set + questions)
+      parameters:
+      - in: path
+        name: attempt_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - assessments
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssessmentAttemptBundleResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiAssessmentDetail'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiAssessmentDetail'
+          description: ''
+  /api/assessments/attempts/abandon/:
+    post:
+      operationId: assessments_attempts_abandon_create
+      tags:
+      - assessments
+      responses:
+        '200':
+          description: No response body
+  /api/assessments/attempts/answer/:
+    post:
+      operationId: assessments_attempts_answer_create
+      summary: Save answer for one question
+      tags:
+      - assessments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaveAnswer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SaveAnswer'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SaveAnswer'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaveAnswerStored'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiAssessmentDetail'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiAssessmentDetail'
+          description: ''
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaveAnswerStaleWrite'
+          description: ''
+        '410':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiAssessmentDetail'
+          description: ''
+  /api/assessments/attempts/start/:
+    post:
+      operationId: assessments_attempts_start_create
+      summary: Start or resume attempt
+      tags:
+      - assessments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartAttempt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StartAttempt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StartAttempt'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssessmentAttempt'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiAssessmentDetail'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiAssessmentDetail'
+          description: ''
+  /api/assessments/attempts/submit/:
+    post:
+      operationId: assessments_attempts_submit_create
+      summary: Submit attempt for grading
+      tags:
+      - assessments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitAttempt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SubmitAttempt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SubmitAttempt'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssessmentSubmitCompleteResponse'
+          description: ''
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssessmentSubmitQueuedResponse'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssessmentSubmitBadRequestResponse'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiAssessmentDetail'
+          description: ''
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssessmentSnapshotConflictResponse'
+          description: ''
+        '410':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiAssessmentDetail'
+          description: ''
+  /api/assessments/homework/{assignment_id}/my-result/:
+    get:
+      operationId: assessments_homework_my_result_retrieve
+      description: |-
+        Convenience endpoint for the homework page: given a class assignment id, return the
+        student's latest attempt/result for that assessment homework.
+      summary: My latest attempt and result for assignment
+      parameters:
+      - in: path
+        name: assignment_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - assessments
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssessmentMyResultResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiAssessmentDetail'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiAssessmentDetail'
+          description: ''
+  /api/assessments/homework/assign/:
+    post:
+      operationId: assessments_homework_assign_create
+      description: |-
+        Teacher assigns an AssessmentSet into a classroom.
+        Creates a linked `classes.Assignment` so it appears in the normal homework feed.
+      tags:
+      - assessments
+      responses:
+        '200':
+          description: No response body
+  /api/auth/client-telemetry/:
+    post:
+      operationId: auth_client_telemetry_create
+      description: |-
+        Best-effort batch sink for SPA auth concurrency telemetry (logs + Prometheus-friendly counters).
+
+        Responses are deliberately tiny; ingestion is gated by Api CSRF middleware for /api/auth/*.
+        Payload is aggregates + recent client events — no persisted PII requirement.
+      tags:
+      - auth
+      responses:
+        '200':
+          description: No response body
+  /api/auth/csrf/:
+    get:
+      operationId: auth_csrf_retrieve
+      description: Issue a CSRF cookie (csrftoken) for SPA clients.
+      tags:
+      - auth
+      responses:
+        '200':
+          description: No response body
+  /api/auth/login/:
+    post:
+      operationId: auth_login_create
+      description: |-
+        Browser auth: set HttpOnly cookies for access+refresh.
+        Response body omits raw tokens to avoid JS-readable auth.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MyTokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MyTokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MyTokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MyTokenObtainPair'
+          description: ''
+  /api/auth/logout/:
+    post:
+      operationId: auth_logout_create
+      description: Clear cookies and revoke the current refresh token (best-effort).
+      tags:
+      - auth
+      responses:
+        '200':
+          description: No response body
+  /api/auth/refresh/:
+    post:
+      operationId: auth_refresh_create
+      description: Refresh using HttpOnly refresh cookie; sets new HttpOnly access
+        cookie.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/auth/sessions/:
+    get:
+      operationId: auth_sessions_retrieve
+      tags:
+      - auth
+      responses:
+        '200':
+          description: No response body
+  /api/auth/sessions/{session_id}/revoke/:
+    post:
+      operationId: auth_sessions_revoke_create
+      parameters:
+      - in: path
+        name: session_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - auth
+      responses:
+        '200':
+          description: No response body
+  /api/auth/sessions/revoke_all/:
+    post:
+      operationId: auth_sessions_revoke_all_create
+      tags:
+      - auth
+      responses:
+        '200':
+          description: No response body
+  /api/classes/:
+    get:
+      operationId: classes_list
+      description: |-
+        - List: classes the current user is a member of
+        - Create: admin only (creates admin membership for creator)
+      tags:
+      - classes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Classroom'
+          description: ''
+    post:
+      operationId: classes_create
+      description: |-
+        - List: classes the current user is a member of
+        - Create: admin only (creates admin membership for creator)
+      tags:
+      - classes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClassroomCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ClassroomCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ClassroomCreate'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassroomCreate'
+          description: ''
+  /api/classes/{classroom_pk}/assignments/:
+    get:
+      operationId: classes_assignments_list
+      description: Fail closed with 403 when classroom exists but the user is not
+        a member (no silent empty lists).
+      parameters:
+      - in: path
+        name: classroom_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - classes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Assignment'
+          description: ''
+    post:
+      operationId: classes_assignments_create
+      description: Fail closed with 403 when classroom exists but the user is not
+        a member (no silent empty lists).
+      parameters:
+      - in: path
+        name: classroom_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - classes
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Assignment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Assignment'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Assignment'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+          description: ''
+  /api/classes/{classroom_pk}/assignments/{id}/:
+    get:
+      operationId: classes_assignments_retrieve
+      description: Fail closed with 403 when classroom exists but the user is not
+        a member (no silent empty lists).
+      parameters:
+      - in: path
+        name: classroom_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - classes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+          description: ''
+    put:
+      operationId: classes_assignments_update
+      description: Fail closed with 403 when classroom exists but the user is not
+        a member (no silent empty lists).
+      parameters:
+      - in: path
+        name: classroom_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - classes
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Assignment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Assignment'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Assignment'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+          description: ''
+    patch:
+      operationId: classes_assignments_partial_update
+      description: Fail closed with 403 when classroom exists but the user is not
+        a member (no silent empty lists).
+      parameters:
+      - in: path
+        name: classroom_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - classes
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAssignment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAssignment'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAssignment'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+          description: ''
+    delete:
+      operationId: classes_assignments_destroy
+      description: Fail closed with 403 when classroom exists but the user is not
+        a member (no silent empty lists).
+      parameters:
+      - in: path
+        name: classroom_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - classes
+      responses:
+        '204':
+          description: No response body
+  /api/classes/{classroom_pk}/assignments/{id}/my-submission/:
+    get:
+      operationId: classes_assignments_my_submission_retrieve
+      description: Fail closed with 403 when classroom exists but the user is not
+        a member (no silent empty lists).
+      parameters:
+      - in: path
+        name: classroom_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - classes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+          description: ''
+  /api/classes/{classroom_pk}/assignments/{id}/submissions/:
+    get:
+      operationId: classes_assignments_submissions_retrieve
+      description: Fail closed with 403 when classroom exists but the user is not
+        a member (no silent empty lists).
+      parameters:
+      - in: path
+        name: classroom_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - classes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+          description: ''
+  /api/classes/{classroom_pk}/assignments/{id}/submit/:
+    post:
+      operationId: classes_assignments_submit_create
+      description: Fail closed with 403 when classroom exists but the user is not
+        a member (no silent empty lists).
+      parameters:
+      - in: path
+        name: classroom_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - classes
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Assignment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Assignment'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Assignment'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+          description: ''
+  /api/classes/{classroom_pk}/comments/:
+    get:
+      operationId: classes_comments_retrieve
+      description: |-
+        Threaded comments on announcements or classwork.
+        GET: ?target_type=post|assignment&target_id=<pk>
+        POST: { target_type, target_id, content, parent? }
+      parameters:
+      - in: path
+        name: classroom_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - classes
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: classes_comments_create
+      description: |-
+        Threaded comments on announcements or classwork.
+        GET: ?target_type=post|assignment&target_id=<pk>
+        POST: { target_type, target_id, content, parent? }
+      parameters:
+      - in: path
+        name: classroom_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - classes
+      responses:
+        '200':
+          description: No response body
+  /api/classes/{classroom_pk}/posts/:
+    get:
+      operationId: classes_posts_list
+      description: Fail closed with 403 when classroom exists but the user is not
+        a member (no silent empty lists).
+      parameters:
+      - in: path
+        name: classroom_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - classes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClassPost'
+          description: ''
+    post:
+      operationId: classes_posts_create
+      description: Fail closed with 403 when classroom exists but the user is not
+        a member (no silent empty lists).
+      parameters:
+      - in: path
+        name: classroom_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - classes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClassPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ClassPost'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ClassPost'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassPost'
+          description: ''
+  /api/classes/{classroom_pk}/posts/{id}/:
+    get:
+      operationId: classes_posts_retrieve
+      description: Fail closed with 403 when classroom exists but the user is not
+        a member (no silent empty lists).
+      parameters:
+      - in: path
+        name: classroom_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - classes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassPost'
+          description: ''
+    patch:
+      operationId: classes_posts_partial_update
+      description: Fail closed with 403 when classroom exists but the user is not
+        a member (no silent empty lists).
+      parameters:
+      - in: path
+        name: classroom_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - classes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedClassPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedClassPost'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedClassPost'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassPost'
+          description: ''
+    delete:
+      operationId: classes_posts_destroy
+      description: Fail closed with 403 when classroom exists but the user is not
+        a member (no silent empty lists).
+      parameters:
+      - in: path
+        name: classroom_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - classes
+      responses:
+        '204':
+          description: No response body
+  /api/classes/{id}/:
+    get:
+      operationId: classes_retrieve
+      description: |-
+        - List: classes the current user is a member of
+        - Create: admin only (creates admin membership for creator)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this classroom.
+        required: true
+      tags:
+      - classes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Classroom'
+          description: ''
+    put:
+      operationId: classes_update
+      description: |-
+        - List: classes the current user is a member of
+        - Create: admin only (creates admin membership for creator)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this classroom.
+        required: true
+      tags:
+      - classes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClassroomCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ClassroomCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ClassroomCreate'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassroomCreate'
+          description: ''
+    patch:
+      operationId: classes_partial_update
+      description: |-
+        - List: classes the current user is a member of
+        - Create: admin only (creates admin membership for creator)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this classroom.
+        required: true
+      tags:
+      - classes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedClassroomCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedClassroomCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedClassroomCreate'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassroomCreate'
+          description: ''
+    delete:
+      operationId: classes_destroy
+      description: |-
+        - List: classes the current user is a member of
+        - Create: admin only (creates admin membership for creator)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this classroom.
+        required: true
+      tags:
+      - classes
+      responses:
+        '204':
+          description: No response body
+  /api/classes/{id}/assignment-options/:
+    get:
+      operationId: classes_assignment_options_retrieve
+      description: |-
+        Pastpaper practice tests the teacher may attach to homework.
+        Uses the same visibility rules as /exams/ for the practice library.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this classroom.
+        required: true
+      tags:
+      - classes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Classroom'
+          description: ''
+  /api/classes/{id}/homework-storage-metrics/:
+    get:
+      operationId: classes_homework_storage_metrics_retrieve
+      description: Stale homework blob cleanup backlog and retry stats (platform-wide;
+        class admins only).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this classroom.
+        required: true
+      tags:
+      - classes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Classroom'
+          description: ''
+  /api/classes/{id}/leaderboard/:
+    get:
+      operationId: classes_leaderboard_retrieve
+      description: |-
+        Pastpaper / practice-test homework stats: per-assignment group mean, per-student ranks,
+        and score on the most recently assigned practice test in this class.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this classroom.
+        required: true
+      tags:
+      - classes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Classroom'
+          description: ''
+  /api/classes/{id}/people/:
+    get:
+      operationId: classes_people_retrieve
+      description: |-
+        - List: classes the current user is a member of
+        - Create: admin only (creates admin membership for creator)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this classroom.
+        required: true
+      tags:
+      - classes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Classroom'
+          description: ''
+  /api/classes/{id}/regenerate_code/:
+    post:
+      operationId: classes_regenerate_code_create
+      description: |-
+        - List: classes the current user is a member of
+        - Create: admin only (creates admin membership for creator)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this classroom.
+        required: true
+      tags:
+      - classes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Classroom'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Classroom'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Classroom'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Classroom'
+          description: ''
+  /api/classes/{id}/stream/:
+    get:
+      operationId: classes_stream_retrieve
+      description: 'Unified class feed: posts, new assignments, and submission events
+        (mixed, newest first).'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this classroom.
+        required: true
+      tags:
+      - classes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Classroom'
+          description: ''
+  /api/classes/{id}/student-workspace/:
+    get:
+      operationId: classes_student_workspace_retrieve
+      description: |-
+        Student-centric slices: all classwork with workflow, due soon, recently graded, new posts.
+        Teachers receive the same assignment list with ``workflow_status`` null.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this classroom.
+        required: true
+      tags:
+      - classes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Classroom'
+          description: ''
+  /api/classes/directory/:
+    get:
+      operationId: classes_directory_retrieve
+      description: Directory-wide classroom list (super_admin/superuser only).
+      tags:
+      - classes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Classroom'
+          description: ''
+  /api/classes/join/:
+    post:
+      operationId: classes_join_create
+      tags:
+      - classes
+      responses:
+        '200':
+          description: No response body
+  /api/classes/submissions/:
+    get:
+      operationId: classes_submissions_list
+      description: Avoid accidental bulk export; grading uses per-assignment submissions/
+        or retrieve by id.
+      tags:
+      - classes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Submission'
+          description: ''
+  /api/classes/submissions/{id}/:
+    get:
+      operationId: classes_submissions_retrieve
+      description: 'Grading: list/retrieve only for submissions in classes where the
+        user is ADMIN.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - classes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'
+          description: ''
+  /api/classes/submissions/{id}/audit-log/:
+    get:
+      operationId: classes_submissions_audit_log_retrieve
+      description: 'Grading: list/retrieve only for submissions in classes where the
+        user is ADMIN.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - classes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'
+          description: ''
+  /api/classes/submissions/{id}/grade/:
+    post:
+      operationId: classes_submissions_grade_create
+      description: 'Grading: list/retrieve only for submissions in classes where the
+        user is ADMIN.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - classes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Submission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Submission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Submission'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'
+          description: ''
+  /api/classes/submissions/{id}/return/:
+    post:
+      operationId: classes_submissions_return_create
+      description: Teacher returns submitted/reviewed work so the student can edit
+        and resubmit.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - classes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Submission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Submission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Submission'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'
+          description: ''
+  /api/csp-report/:
+    post:
+      operationId: csp_report_create
+      description: Browser `report-uri` / CSP Reporting API sink. Log-only; used during
+        report-only → enforce.
+      tags:
+      - csp-report
+      responses:
+        '200':
+          description: No response body
+  /api/exams/:
+    get:
+      operationId: exams_list
+      description: |-
+        Pastpaper / skill practice only: standalone PracticeTest rows (no mock_exam).
+        Timed mocks and their sections are only exposed via mock-exams + /mock/:id.
+
+        List/retrieve are **AllowAny** so the Next.js practice catalog can load without cookies;
+        starting an attempt still requires auth on ``TestAttemptViewSet``.
+      tags:
+      - exams
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PracticeTest'
+          description: ''
+  /api/exams/{id}/:
+    get:
+      operationId: exams_retrieve
+      description: |-
+        Pastpaper / skill practice only: standalone PracticeTest rows (no mock_exam).
+        Timed mocks and their sections are only exposed via mock-exams + /mock/:id.
+
+        List/retrieve are **AllowAny** so the Next.js practice catalog can load without cookies;
+        starting an attempt still requires auth on ``TestAttemptViewSet``.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          pattern: ^\\d+$
+        required: true
+      tags:
+      - exams
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PracticeTest'
+          description: ''
+  /api/exams/admin/mock-exams/:
+    get:
+      operationId: exams_admin_mock_exams_list
+      tags:
+      - exams
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminMockExam'
+          description: ''
+    post:
+      operationId: exams_admin_mock_exams_create
+      tags:
+      - exams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminMockExam'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminMockExam'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminMockExam'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminMockExam'
+          description: ''
+  /api/exams/admin/mock-exams/{id}/:
+    get:
+      operationId: exams_admin_mock_exams_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this mock exam.
+        required: true
+      tags:
+      - exams
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminMockExam'
+          description: ''
+    put:
+      operationId: exams_admin_mock_exams_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this mock exam.
+        required: true
+      tags:
+      - exams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminMockExam'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminMockExam'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminMockExam'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminMockExam'
+          description: ''
+    patch:
+      operationId: exams_admin_mock_exams_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this mock exam.
+        required: true
+      tags:
+      - exams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminMockExam'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminMockExam'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminMockExam'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminMockExam'
+          description: ''
+    delete:
+      operationId: exams_admin_mock_exams_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this mock exam.
+        required: true
+      tags:
+      - exams
+      responses:
+        '204':
+          description: No response body
+  /api/exams/admin/mock-exams/{id}/add_test/:
+    post:
+      operationId: exams_admin_mock_exams_add_test_create
+      description: Create a mock-only section (new items; do not reuse pastpaper PracticeTest
+        rows).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this mock exam.
+        required: true
+      tags:
+      - exams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminMockExam'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminMockExam'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminMockExam'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminMockExam'
+          description: ''
+  /api/exams/admin/mock-exams/{id}/assign_users/:
+    post:
+      operationId: exams_admin_mock_exams_assign_users_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this mock exam.
+        required: true
+      tags:
+      - exams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminMockExam'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminMockExam'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminMockExam'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminMockExam'
+          description: ''
+  /api/exams/admin/mock-exams/{id}/publish/:
+    post:
+      operationId: exams_admin_mock_exams_publish_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this mock exam.
+        required: true
+      tags:
+      - exams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminMockExam'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminMockExam'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminMockExam'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminMockExam'
+          description: ''
+  /api/exams/admin/mock-exams/{id}/remove_test/:
+    delete:
+      operationId: exams_admin_mock_exams_remove_test_destroy
+      description: Remove a PracticeTest from this MockExam.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this mock exam.
+        required: true
+      tags:
+      - exams
+      responses:
+        '204':
+          description: No response body
+  /api/exams/admin/mock-exams/{id}/unpublish/:
+    post:
+      operationId: exams_admin_mock_exams_unpublish_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this mock exam.
+        required: true
+      tags:
+      - exams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminMockExam'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminMockExam'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminMockExam'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminMockExam'
+          description: ''
+  /api/exams/admin/pastpaper-packs/:
+    get:
+      operationId: exams_admin_pastpaper_packs_list
+      tags:
+      - exams
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminPastpaperPack'
+          description: ''
+    post:
+      operationId: exams_admin_pastpaper_packs_create
+      tags:
+      - exams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminPastpaperPack'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminPastpaperPack'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminPastpaperPack'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminPastpaperPack'
+          description: ''
+  /api/exams/admin/pastpaper-packs/{id}/:
+    get:
+      operationId: exams_admin_pastpaper_packs_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this pastpaper pack.
+        required: true
+      tags:
+      - exams
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminPastpaperPack'
+          description: ''
+    put:
+      operationId: exams_admin_pastpaper_packs_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this pastpaper pack.
+        required: true
+      tags:
+      - exams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminPastpaperPack'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminPastpaperPack'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminPastpaperPack'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminPastpaperPack'
+          description: ''
+    patch:
+      operationId: exams_admin_pastpaper_packs_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this pastpaper pack.
+        required: true
+      tags:
+      - exams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminPastpaperPack'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminPastpaperPack'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminPastpaperPack'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminPastpaperPack'
+          description: ''
+    delete:
+      operationId: exams_admin_pastpaper_packs_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this pastpaper pack.
+        required: true
+      tags:
+      - exams
+      responses:
+        '204':
+          description: No response body
+  /api/exams/admin/pastpaper-packs/{id}/add_section/:
+    post:
+      operationId: exams_admin_pastpaper_packs_add_section_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this pastpaper pack.
+        required: true
+      tags:
+      - exams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminPastpaperPack'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminPastpaperPack'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminPastpaperPack'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminPastpaperPack'
+          description: ''
+  /api/exams/admin/tests/:
+    get:
+      operationId: exams_admin_tests_list
+      tags:
+      - exams
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminPracticeTest'
+          description: ''
+    post:
+      operationId: exams_admin_tests_create
+      tags:
+      - exams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminPracticeTest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminPracticeTest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminPracticeTest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminPracticeTest'
+          description: ''
+  /api/exams/admin/tests/{id}/:
+    get:
+      operationId: exams_admin_tests_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this practice test.
+        required: true
+      tags:
+      - exams
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminPracticeTest'
+          description: ''
+    put:
+      operationId: exams_admin_tests_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this practice test.
+        required: true
+      tags:
+      - exams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminPracticeTest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminPracticeTest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminPracticeTest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminPracticeTest'
+          description: ''
+    patch:
+      operationId: exams_admin_tests_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this practice test.
+        required: true
+      tags:
+      - exams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminPracticeTest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminPracticeTest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminPracticeTest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminPracticeTest'
+          description: ''
+    delete:
+      operationId: exams_admin_tests_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this practice test.
+        required: true
+      tags:
+      - exams
+      responses:
+        '204':
+          description: No response body
+  /api/exams/admin/tests/{test_pk}/modules/:
+    get:
+      operationId: exams_admin_tests_modules_list
+      parameters:
+      - in: path
+        name: test_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - exams
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminModule'
+          description: ''
+    post:
+      operationId: exams_admin_tests_modules_create
+      parameters:
+      - in: path
+        name: test_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - exams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminModule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminModule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminModule'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminModule'
+          description: ''
+  /api/exams/admin/tests/{test_pk}/modules/{module_pk}/questions/:
+    get:
+      operationId: exams_admin_tests_modules_questions_list
+      parameters:
+      - in: path
+        name: module_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: test_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - exams
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminQuestion'
+          description: ''
+    post:
+      operationId: exams_admin_tests_modules_questions_create
+      parameters:
+      - in: path
+        name: module_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: test_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - exams
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminQuestion'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminQuestion'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminQuestion'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminQuestion'
+          description: ''
+  /api/exams/admin/tests/{test_pk}/modules/{module_pk}/questions/{id}/:
+    get:
+      operationId: exams_admin_tests_modules_questions_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: module_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: test_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - exams
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminQuestion'
+          description: ''
+    put:
+      operationId: exams_admin_tests_modules_questions_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: module_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: test_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - exams
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminQuestion'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminQuestion'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminQuestion'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminQuestion'
+          description: ''
+    patch:
+      operationId: exams_admin_tests_modules_questions_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: module_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: test_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - exams
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminQuestion'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminQuestion'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminQuestion'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminQuestion'
+          description: ''
+    delete:
+      operationId: exams_admin_tests_modules_questions_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: module_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: test_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - exams
+      responses:
+        '204':
+          description: No response body
+  /api/exams/admin/tests/{test_pk}/modules/{module_pk}/questions/{id}/reorder/:
+    post:
+      operationId: exams_admin_tests_modules_questions_reorder_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: module_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: test_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - exams
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminQuestion'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminQuestion'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminQuestion'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminQuestion'
+          description: ''
+  /api/exams/admin/tests/{test_pk}/modules/{id}/:
+    get:
+      operationId: exams_admin_tests_modules_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: test_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - exams
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminModule'
+          description: ''
+    put:
+      operationId: exams_admin_tests_modules_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: test_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - exams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminModule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminModule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminModule'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminModule'
+          description: ''
+    patch:
+      operationId: exams_admin_tests_modules_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: test_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - exams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminModule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminModule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminModule'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminModule'
+          description: ''
+    delete:
+      operationId: exams_admin_tests_modules_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: test_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - exams
+      responses:
+        '204':
+          description: No response body
+  /api/exams/assignments/history/:
+    get:
+      operationId: exams_assignments_history_list
+      description: GET /api/exams/assignments/history/ — persisted library bulk-assign
+        runs.
+      tags:
+      - exams
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BulkAssignmentDispatch'
+          description: ''
+  /api/exams/assignments/history/{id}/:
+    get:
+      operationId: exams_assignments_history_retrieve
+      description: GET /api/exams/assignments/history/<id>/ — single dispatch detail.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - exams
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkAssignmentDispatchDetail'
+          description: ''
+  /api/exams/assignments/history/{id}/rerun/:
+    post:
+      operationId: exams_assignments_history_rerun_create
+      description: POST /api/exams/assignments/history/<id>/rerun/ — replay stored
+        payload.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - exams
+      responses:
+        '200':
+          description: No response body
+  /api/exams/attempts/:
+    get:
+      operationId: exams_attempts_list
+      tags:
+      - exams
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TestAttempt'
+          description: ''
+    post:
+      operationId: exams_attempts_create
+      tags:
+      - exams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TestAttempt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TestAttempt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TestAttempt'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestAttempt'
+          description: ''
+  /api/exams/attempts/{id}/:
+    get:
+      operationId: exams_attempts_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - exams
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestAttempt'
+          description: ''
+  /api/exams/attempts/{id}/results/:
+    get:
+      operationId: exams_attempts_results_retrieve
+      description: Final results payload (answers/analytics) only when COMPLETED.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - exams
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestAttempt'
+          description: ''
+  /api/exams/attempts/{id}/resume/:
+    post:
+      operationId: exams_attempts_resume_create
+      description: |-
+        Locks the attempt row and normalizes canonical engine state via ``start_attempt`` only.
+        Legacy ``*_SUBMITTED`` repairs are CLI-only (`repair_exam_integrity`).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - exams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TestAttempt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TestAttempt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TestAttempt'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestAttempt'
+          description: ''
+  /api/exams/attempts/{id}/review/:
+    get:
+      operationId: exams_attempts_review_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - exams
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestAttempt'
+          description: ''
+  /api/exams/attempts/{id}/save_attempt/:
+    post:
+      operationId: exams_attempts_save_attempt_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - exams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TestAttempt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TestAttempt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TestAttempt'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestAttempt'
+          description: ''
+  /api/exams/attempts/{id}/start/:
+    post:
+      operationId: exams_attempts_start_create
+      description: 'Start the attempt: always starts Module 1 (backend authoritative).'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - exams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TestAttempt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TestAttempt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TestAttempt'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestAttempt'
+          description: ''
+  /api/exams/attempts/{id}/start_module/:
+    post:
+      operationId: exams_attempts_start_module_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - exams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TestAttempt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TestAttempt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TestAttempt'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestAttempt'
+          description: ''
+  /api/exams/attempts/{id}/status/:
+    get:
+      operationId: exams_attempts_status_retrieve
+      description: |-
+        Read-only attempt payload for polling/status UI.
+
+        IMPORTANT: do not lock or mutate state in GET requests.
+        All state transitions happen in POST endpoints (start/save/submit).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - exams
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestAttempt'
+          description: ''
+  /api/exams/attempts/{id}/submit_module/:
+    post:
+      operationId: exams_attempts_submit_module_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - exams
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TestAttempt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TestAttempt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TestAttempt'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestAttempt'
+          description: ''
+  /api/exams/metrics/:
+    get:
+      operationId: exams_metrics_retrieve
+      description: Operational counters for the exam engine (staff).
+      tags:
+      - exams
+      responses:
+        '200':
+          description: No response body
+  /api/exams/metrics/prometheus/:
+    get:
+      operationId: exams_metrics_prometheus_retrieve
+      description: Prometheus text exposition for exam engine counters (staff endpoint).
+      tags:
+      - exams
+      responses:
+        '200':
+          description: No response body
+  /api/exams/mock-exams/:
+    get:
+      operationId: exams_mock_exams_list
+      description: |-
+        Timed diagnostic mocks (staff-authored sections, not the pastpaper library).
+        List: PortalMockExam rows for students. Retrieve: mock shell + sections for /mock/:id.
+      tags:
+      - exams
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MockExam'
+          description: ''
+  /api/exams/mock-exams/{id}/:
+    get:
+      operationId: exams_mock_exams_retrieve
+      description: |-
+        Timed diagnostic mocks (staff-authored sections, not the pastpaper library).
+        List: PortalMockExam rows for students. Retrieve: mock shell + sections for /mock/:id.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - exams
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MockExam'
+          description: ''
+  /api/ops/alertmanager/webhook/:
+    post:
+      operationId: ops_alertmanager_webhook_create
+      description: |-
+        Receives Alertmanager webhooks and forwards to Telegram.
+
+        Env:
+        - ALERTMANAGER_WEBHOOK_SECRET: optional shared secret sent as header X-Alertmanager-Secret
+        - ALERT_TELEGRAM_BOT_TOKEN
+        - ALERT_TELEGRAM_CHAT_ID
+      tags:
+      - ops
+      responses:
+        '200':
+          description: No response body
+  /api/realtime/events/:
+    get:
+      operationId: realtime_events_retrieve
+      description: |-
+        GET /api/realtime/events/?last_id=<int>&classroom_id=<int>&debug_trace=1
+
+        Hybrid delivery: priority-tiered Redis channels (drain high→medium→low), then DB tail (priority ordered).
+      tags:
+      - realtime
+      responses:
+        '200':
+          description: No response body
+  /api/realtime/metrics/:
+    get:
+      operationId: realtime_metrics_retrieve
+      description: Operational counters (staff).
+      tags:
+      - realtime
+      responses:
+        '200':
+          description: No response body
+  /api/realtime/metrics/prometheus/:
+    get:
+      operationId: realtime_metrics_prometheus_retrieve
+      description: Prometheus text exposition (staff session — put Nginx basic auth
+        or mTLS in front for scraping).
+      tags:
+      - realtime
+      responses:
+        '200':
+          description: No response body
+  /api/realtime/ops/incidents/:
+    get:
+      operationId: realtime_ops_incidents_retrieve
+      tags:
+      - realtime
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: realtime_ops_incidents_create
+      tags:
+      - realtime
+      responses:
+        '200':
+          description: No response body
+  /api/realtime/ops/incidents/{id}/:
+    patch:
+      operationId: realtime_ops_incidents_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - realtime
+      responses:
+        '200':
+          description: No response body
+  /api/schema/:
+    get:
+      operationId: schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - af
+          - ar
+          - ar-dz
+          - ast
+          - az
+          - be
+          - bg
+          - bn
+          - br
+          - bs
+          - ca
+          - ckb
+          - cs
+          - cy
+          - da
+          - de
+          - dsb
+          - el
+          - en
+          - en-au
+          - en-gb
+          - eo
+          - es
+          - es-ar
+          - es-co
+          - es-mx
+          - es-ni
+          - es-ve
+          - et
+          - eu
+          - fa
+          - fi
+          - fr
+          - fy
+          - ga
+          - gd
+          - gl
+          - he
+          - hi
+          - hr
+          - hsb
+          - ht
+          - hu
+          - hy
+          - ia
+          - id
+          - ig
+          - io
+          - is
+          - it
+          - ja
+          - ka
+          - kab
+          - kk
+          - km
+          - kn
+          - ko
+          - ky
+          - lb
+          - lt
+          - lv
+          - mk
+          - ml
+          - mn
+          - mr
+          - ms
+          - my
+          - nb
+          - ne
+          - nl
+          - nn
+          - os
+          - pa
+          - pl
+          - pt
+          - pt-br
+          - ro
+          - ru
+          - sk
+          - sl
+          - sq
+          - sr
+          - sr-latn
+          - sv
+          - sw
+          - ta
+          - te
+          - tg
+          - th
+          - tk
+          - tr
+          - tt
+          - udm
+          - ug
+          - uk
+          - ur
+          - uz
+          - vi
+          - zh-hans
+          - zh-hant
+      tags:
+      - schema
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/users/:
+    get:
+      operationId: users_list
+      tags:
+      - users
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+          description: ''
+  /api/users/{id}/delete/:
+    delete:
+      operationId: users_delete_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - users
+      responses:
+        '204':
+          description: No response body
+  /api/users/{id}/update/:
+    put:
+      operationId: users_update_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: users_update_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/users/admin/exam-dates/:
+    get:
+      operationId: users_admin_exam_dates_list
+      tags:
+      - users
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExamDateOption'
+          description: ''
+    post:
+      operationId: users_admin_exam_dates_create
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExamDateOption'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ExamDateOption'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExamDateOption'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExamDateOption'
+          description: ''
+  /api/users/admin/exam-dates/{id}/:
+    get:
+      operationId: users_admin_exam_dates_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - users
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExamDateOption'
+          description: ''
+    put:
+      operationId: users_admin_exam_dates_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExamDateOption'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ExamDateOption'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExamDateOption'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExamDateOption'
+          description: ''
+    patch:
+      operationId: users_admin_exam_dates_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedExamDateOption'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedExamDateOption'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedExamDateOption'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExamDateOption'
+          description: ''
+    delete:
+      operationId: users_admin_exam_dates_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - users
+      responses:
+        '204':
+          description: No response body
+  /api/users/create/:
+    post:
+      operationId: users_create_create
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/users/exam-dates/:
+    get:
+      operationId: users_exam_dates_list
+      description: Active exam dates for student profile dropdown.
+      tags:
+      - users
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExamDateOptionPublic'
+          description: ''
+  /api/users/google/:
+    post:
+      operationId: users_google_create
+      tags:
+      - users
+      responses:
+        '200':
+          description: No response body
+  /api/users/me/:
+    get:
+      operationId: users_me_retrieve
+      tags:
+      - users
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserMe'
+          description: ''
+    put:
+      operationId: users_me_update
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserMe'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserMe'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserMe'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserMe'
+          description: ''
+    patch:
+      operationId: users_me_partial_update
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserMe'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserMe'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserMe'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserMe'
+          description: ''
+  /api/users/me/security/:
+    get:
+      operationId: users_me_security_retrieve
+      description: Recent security events and adaptive account flags for the signed-in
+        user.
+      tags:
+      - users
+      responses:
+        '200':
+          description: No response body
+  /api/users/register/:
+    post:
+      operationId: users_register_create
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/users/telegram/:
+    post:
+      operationId: users_telegram_create
+      description: 'Telegram Login (oauth embed): verify HMAC, optional verified ``phone_number``
+        from Telegram, issue JWT.'
+      tags:
+      - users
+      responses:
+        '200':
+          description: No response body
+  /api/users/telegram/config/:
+    get:
+      operationId: users_telegram_config_retrieve
+      description: 'Public: whether Telegram login is configured and which bot username
+        the widget needs.'
+      tags:
+      - users
+      responses:
+        '200':
+          description: No response body
+  /api/users/telegram/link/:
+    post:
+      operationId: users_telegram_link_create
+      description: Link Telegram to the currently logged-in account (profile «Connect
+        Telegram»).
+      tags:
+      - users
+      responses:
+        '200':
+          description: No response body
+  /api/vocab/all/:
+    get:
+      operationId: vocab_all_retrieve
+      description: |-
+        GET /api/vocab/all/
+        User progress rows with nested word + definitions.
+      tags:
+      - vocab
+      responses:
+        '200':
+          description: No response body
+  /api/vocab/review/:
+    post:
+      operationId: vocab_review_create
+      description: |-
+        POST /api/vocab/review/
+        Body: { word_id, result: again|hard|good|easy }
+      tags:
+      - vocab
+      responses:
+        '200':
+          description: No response body
+  /api/vocab/today/:
+    get:
+      operationId: vocab_today_retrieve
+      description: |-
+        GET /api/vocab/today/
+
+        Response: ``{ review: [...due progress cards], new: [...words without progress] }``
+
+        Ordering in ``review``: overdue (`next_review_at` null or `< now`),
+        then due today (`now ≤ next_review_at < local next midnight`).
+        Caps: ``settings.VOCAB_MAX_*``; optional ``?max_new`` / ``?max_review`` (cannot exceed caps).
+        Remaining slots subtract per-day usage: review tallies exclude first-ever ``again`` per word;
+        new tallies count only successful ``good``/``easy`` introductions via ``introduced_at``.
+      tags:
+      - vocab
+      responses:
+        '200':
+          description: No response body
+  /api/vocabulary/admin/words/:
+    get:
+      operationId: vocabulary_admin_words_retrieve
+      description: |-
+        Admin CRUD for in-app UI (mirrors exams admin style):
+        GET /api/vocabulary/admin/words/
+        POST /api/vocabulary/admin/words/
+      tags:
+      - vocabulary
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: vocabulary_admin_words_create
+      description: |-
+        Admin CRUD for in-app UI (mirrors exams admin style):
+        GET /api/vocabulary/admin/words/
+        POST /api/vocabulary/admin/words/
+      tags:
+      - vocabulary
+      responses:
+        '200':
+          description: No response body
+  /api/vocabulary/admin/words/{id}/:
+    patch:
+      operationId: vocabulary_admin_words_partial_update
+      description: |-
+        Admin CRUD for in-app UI:
+        PATCH /api/vocabulary/admin/words/<id>/
+        DELETE /api/vocabulary/admin/words/<id>/
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - vocabulary
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: vocabulary_admin_words_destroy
+      description: |-
+        Admin CRUD for in-app UI:
+        PATCH /api/vocabulary/admin/words/<id>/
+        DELETE /api/vocabulary/admin/words/<id>/
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - vocabulary
+      responses:
+        '204':
+          description: No response body
+  /api/vocabulary/daily/:
+    get:
+      operationId: vocabulary_daily_retrieve
+      description: |-
+        GET /api/vocabulary/daily
+        Returns a daily session payload:
+        - due reviews first (next_review_at <= now)
+        - then new words to reach target size
+        Includes stats snapshot (learned, accuracy, streak).
+      tags:
+      - vocabulary
+      responses:
+        '200':
+          description: No response body
+  /api/vocabulary/review/:
+    post:
+      operationId: vocabulary_review_create
+      description: |-
+        POST /api/vocabulary/review
+        Payload: { word_id, result: "correct"|"wrong" }
+        Updates progress + schedules next review, and records a review event (for streak + analytics).
+      tags:
+      - vocabulary
+      responses:
+        '200':
+          description: No response body
+  /api/vocabulary/words/:
+    get:
+      operationId: vocabulary_words_retrieve
+      description: |-
+        GET /api/vocabulary/words
+        - Student: browse words (optionally filtered) for discovery
+      tags:
+      - vocabulary
+      responses:
+        '200':
+          description: No response body
+components:
+  schemas:
+    AdminMockExam:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          description: Timed diagnostic mock (staff-authored). Not built from pastpaper
+            practice items.
+          maxLength: 200
+        practice_date:
+          type: string
+          format: date
+          nullable: true
+        is_active:
+          type: boolean
+        is_published:
+          type: boolean
+          readOnly: true
+          description: When True, students with portal access see this timed mock.
+            Pastpaper practice uses separate standalone tests.
+        published_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        kind:
+          $ref: '#/components/schemas/Kind5b0Enum'
+        midterm_subject:
+          $ref: '#/components/schemas/MidtermSubjectEnum'
+        midterm_module_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        midterm_module1_minutes:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        midterm_module2_minutes:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        midterm_target_question_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          description: 0 = no fixed target. Otherwise planner cap for total questions
+            across modules.
+        tests:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminPracticeTest'
+          readOnly: true
+        publish_ready:
+          type: string
+          readOnly: true
+        publish_block_reason:
+          type: string
+          readOnly: true
+      required:
+      - id
+      - is_published
+      - publish_block_reason
+      - publish_ready
+      - published_at
+      - tests
+      - title
+    AdminModule:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        module_order:
+          allOf:
+          - $ref: '#/components/schemas/ModuleOrderEnum'
+          minimum: -9223372036854775808
+          maximum: 9223372036854775807
+        time_limit_minutes:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+      required:
+      - id
+      - module_order
+      - time_limit_minutes
+    AdminPastpaperPack:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          description: Pack title shown on student practice cards.
+          maxLength: 255
+        practice_date:
+          type: string
+          format: date
+          nullable: true
+        label:
+          type: string
+          description: e.g. A, B — shared by sections in this pack.
+          maxLength: 10
+        form_type:
+          $ref: '#/components/schemas/FormTypeEnum'
+        sections:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminPracticeTest'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - sections
+      - updated_at
+    AdminPracticeTest:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          description: Pastpaper / practice test name (shown in admin and student
+            lists).
+          maxLength: 255
+        practice_date:
+          type: string
+          format: date
+          nullable: true
+          description: Optional official/exam date shown on student practice cards.
+        subject:
+          type: string
+        label:
+          type: string
+          description: e.g., A, B, C, D
+          maxLength: 10
+        form_type:
+          $ref: '#/components/schemas/FormTypeEnum'
+        mock_exam:
+          type: integer
+          readOnly: true
+          nullable: true
+          description: NULL = pastpaper / practice library. If set, this row is a
+            mock-only section (staff-built under that mock, never linked from pastpapers).
+        pastpaper_pack:
+          type: integer
+          nullable: true
+        modules:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminModule'
+          readOnly: true
+        assigned_users:
+          type: array
+          items:
+            type: integer
+      required:
+      - id
+      - mock_exam
+      - modules
+      - subject
+    AdminQuestion:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        module_id:
+          type: integer
+          readOnly: true
+        practice_test_id:
+          type: integer
+          readOnly: true
+        question_type:
+          $ref: '#/components/schemas/QuestionTypeE1eEnum'
+        question_text:
+          type: string
+        question_prompt:
+          type: string
+          description: Secondary text displayed above answer choices.
+        question_image:
+          type: string
+          format: uri
+          nullable: true
+        is_math_input:
+          type: boolean
+        correct_answer:
+          type: string
+        score:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          description: Score weight for this question
+        explanation:
+          type: string
+        order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        option_a:
+          type: string
+        option_b:
+          type: string
+        option_c:
+          type: string
+        option_d:
+          type: string
+        option_a_image:
+          type: string
+          format: uri
+          nullable: true
+        option_b_image:
+          type: string
+          format: uri
+          nullable: true
+        option_c_image:
+          type: string
+          format: uri
+          nullable: true
+        option_d_image:
+          type: string
+          format: uri
+          nullable: true
+        clear_question_image:
+          type: boolean
+          writeOnly: true
+        clear_option_a_image:
+          type: boolean
+          writeOnly: true
+        clear_option_b_image:
+          type: boolean
+          writeOnly: true
+        clear_option_c_image:
+          type: boolean
+          writeOnly: true
+        clear_option_d_image:
+          type: boolean
+          writeOnly: true
+      required:
+      - correct_answer
+      - id
+      - module_id
+      - practice_test_id
+      - question_text
+      - question_type
+    ApiAssessmentDetail:
+      type: object
+      description: Minimal `{detail}` error payloads returned by assessments student
+        APIs.
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    AssessmentAttempt:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        homework_id:
+          type: integer
+          readOnly: true
+        student_id:
+          type: integer
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/AssessmentAttemptStatusEnum'
+        started_at:
+          type: string
+          format: date-time
+        submitted_at:
+          type: string
+          format: date-time
+          nullable: true
+        abandoned_at:
+          type: string
+          format: date-time
+          nullable: true
+        last_activity_at:
+          type: string
+          format: date-time
+          nullable: true
+        total_time_seconds:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        active_time_seconds:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        grading_status:
+          $ref: '#/components/schemas/GradingStatusEnum'
+        grading_attempts:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        question_order: {}
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssessmentAttemptAnswer'
+          readOnly: true
+      required:
+      - answers
+      - homework_id
+      - id
+      - student_id
+    AssessmentAttemptAnswer:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        question_id:
+          type: integer
+          readOnly: true
+        answer:
+          nullable: true
+        time_spent_seconds:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        is_correct:
+          type: boolean
+          nullable: true
+        points_awarded:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,5}(?:\.\d{0,2})?$
+          nullable: true
+        answered_at:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - id
+      - question_id
+    AssessmentAttemptBundleResponse:
+      type: object
+      properties:
+        attempt:
+          $ref: '#/components/schemas/AssessmentAttempt'
+        set:
+          $ref: '#/components/schemas/AssessmentSet'
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssessmentQuestion'
+      required:
+      - attempt
+      - questions
+      - set
+    AssessmentAttemptStatusEnum:
+      enum:
+      - in_progress
+      - submitted
+      - graded
+      - abandoned
+      type: string
+      description: |-
+        * `in_progress` - In progress
+        * `submitted` - Submitted
+        * `graded` - Graded
+        * `abandoned` - Abandoned
+    AssessmentMyResultResponse:
+      type: object
+      properties:
+        attempt:
+          allOf:
+          - $ref: '#/components/schemas/AssessmentAttempt'
+          nullable: true
+        result:
+          allOf:
+          - $ref: '#/components/schemas/AssessmentResult'
+          nullable: true
+      required:
+      - attempt
+      - result
+    AssessmentQuestion:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        prompt:
+          type: string
+        question_type:
+          $ref: '#/components/schemas/AssessmentQuestionQuestionTypeEnum'
+        choices: {}
+        points:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        is_active:
+          type: boolean
+      required:
+      - id
+      - prompt
+      - question_type
+    AssessmentQuestionQuestionTypeEnum:
+      enum:
+      - multiple_choice
+      - short_text
+      - numeric
+      - boolean
+      type: string
+      description: |-
+        * `multiple_choice` - Multiple choice
+        * `short_text` - Short text
+        * `numeric` - Numeric
+        * `boolean` - True/False
+    AssessmentResult:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        attempt_id:
+          type: integer
+          readOnly: true
+        score_points:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        max_points:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        percent:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,4}(?:\.\d{0,2})?$
+        correct_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        total_questions:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        graded_at:
+          type: string
+          format: date-time
+      required:
+      - attempt_id
+      - id
+    AssessmentSet:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        subject:
+          $ref: '#/components/schemas/Subject0bfEnum'
+        category:
+          type: string
+          maxLength: 255
+        title:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssessmentQuestion'
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - questions
+      - subject
+      - title
+      - updated_at
+    AssessmentSnapshotConflictResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    AssessmentSubmitBadRequestResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+        missing_question_ids:
+          type: array
+          items:
+            type: integer
+      required:
+      - detail
+    AssessmentSubmitCompleteResponse:
+      type: object
+      description: Submit completed synchronously or idempotent replay of submitted/graded
+        attempt.
+      properties:
+        attempt:
+          $ref: '#/components/schemas/AssessmentAttempt'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/AssessmentResult'
+          nullable: true
+      required:
+      - attempt
+    AssessmentSubmitQueuedResponse:
+      type: object
+      description: Async grading accepted; poll `my-result` or re-fetch bundle for
+        graded state.
+      properties:
+        attempt:
+          $ref: '#/components/schemas/AssessmentAttempt'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/AssessmentResult'
+          nullable: true
+        grading:
+          $ref: '#/components/schemas/GradingEnum'
+      required:
+      - attempt
+      - grading
+      - result
+    Assignment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        instructions:
+          type: string
+        due_at:
+          type: string
+          format: date-time
+          nullable: true
+        mock_exam:
+          type: integer
+          nullable: true
+        practice_test:
+          type: integer
+          nullable: true
+        pastpaper_pack:
+          type: integer
+          nullable: true
+        practice_test_ids:
+          nullable: true
+        practice_scope:
+          allOf:
+          - $ref: '#/components/schemas/PracticeScopeEnum'
+          default: BOTH
+        practice_bundle_tests:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssignmentPracticeBundleTest'
+          readOnly: true
+        locks_file_upload:
+          type: boolean
+          readOnly: true
+        assessment_homework:
+          allOf:
+          - $ref: '#/components/schemas/AssignmentAssessmentHomework'
+          readOnly: true
+          nullable: true
+        module:
+          type: integer
+          nullable: true
+        external_url:
+          type: string
+        attachment_file:
+          type: string
+          format: uri
+          nullable: true
+        attachment_file_url:
+          type: string
+          format: uri
+          readOnly: true
+          nullable: true
+        attachment_urls:
+          type: array
+          items:
+            type: string
+            format: uri
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/AssignmentCreatedBy'
+          readOnly: true
+        submissions_count:
+          type: integer
+          readOnly: true
+      required:
+      - assessment_homework
+      - attachment_file_url
+      - attachment_urls
+      - created_at
+      - created_by
+      - id
+      - locks_file_upload
+      - practice_bundle_tests
+      - submissions_count
+      - title
+    AssignmentAssessmentHomework:
+      type: object
+      properties:
+        homework_id:
+          type: integer
+        set:
+          allOf:
+          - $ref: '#/components/schemas/AssignmentAssessmentHomeworkSet'
+          nullable: true
+      required:
+      - homework_id
+    AssignmentAssessmentHomeworkSet:
+      type: object
+      properties:
+        id:
+          type: integer
+        subject:
+          type: string
+        category:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+      required:
+      - category
+      - description
+      - id
+      - subject
+      - title
+    AssignmentCreatedBy:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+          format: email
+        username:
+          type: string
+          nullable: true
+        first_name:
+          type: string
+        last_name:
+          type: string
+      required:
+      - email
+      - id
+    AssignmentPracticeBundleTest:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        subject:
+          type: string
+      required:
+      - id
+      - subject
+      - title
+    AttemptModuleQuestionResult:
+      type: object
+      description: Mirror of ``TestAttempt.get_module_results`` inner question rows
+        (review payload).
+      properties:
+        id:
+          type: integer
+        is_correct:
+          type: boolean
+        student_answer:
+          nullable: true
+        correct_answers:
+          type: string
+        score:
+          type: integer
+        text:
+          type: string
+        question_prompt:
+          type: string
+          default: ''
+        image:
+          type: string
+          nullable: true
+        type:
+          type: string
+        options:
+          nullable: true
+        is_math_input:
+          type: boolean
+      required:
+      - correct_answers
+      - id
+      - is_correct
+      - is_math_input
+      - options
+      - score
+      - student_answer
+      - text
+      - type
+    AttemptModuleResultsItem:
+      type: object
+      properties:
+        module_id:
+          type: integer
+        module_order:
+          type: integer
+        module_earned:
+          type: integer
+        capped_earned:
+          type: integer
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttemptModuleQuestionResult'
+      required:
+      - capped_earned
+      - module_earned
+      - module_id
+      - module_order
+      - questions
+    AttemptPracticeTestDetails:
+      type: object
+      description: |-
+        Embedded snapshot on ``TestAttempt`` via ``practice_test_details`` (SerializerMethodField).
+        Schema must mirror ``get_practice_test_details`` for OpenAPI.
+      properties:
+        id:
+          type: integer
+        subject:
+          type: string
+        title:
+          type: string
+        label:
+          type: string
+          nullable: true
+        form_type:
+          type: string
+          nullable: true
+        practice_date:
+          type: string
+          nullable: true
+        pastpaper_pack:
+          allOf:
+          - $ref: '#/components/schemas/PastpaperPackBrief'
+          nullable: true
+        is_active:
+          type: boolean
+        mock_exam_id:
+          type: integer
+          nullable: true
+        mock_kind:
+          type: string
+          nullable: true
+        modules:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModuleList'
+      required:
+      - id
+      - modules
+      - subject
+      - title
+    BulkAssignmentDispatch:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        kind:
+          allOf:
+          - $ref: '#/components/schemas/Kind69fEnum'
+          readOnly: true
+        subject_summary:
+          type: string
+          readOnly: true
+        students_requested_count:
+          type: integer
+          readOnly: true
+        students_granted_count:
+          type: integer
+          readOnly: true
+        assigned_by:
+          type: integer
+          readOnly: true
+          nullable: true
+        assigned_by_name:
+          type: string
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusFdcEnum'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - assigned_by
+      - assigned_by_name
+      - created_at
+      - id
+      - kind
+      - status
+      - students_granted_count
+      - students_requested_count
+      - subject_summary
+    BulkAssignmentDispatchDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        kind:
+          allOf:
+          - $ref: '#/components/schemas/Kind69fEnum'
+          readOnly: true
+        subject_summary:
+          type: string
+          readOnly: true
+        students_requested_count:
+          type: integer
+          readOnly: true
+        students_granted_count:
+          type: integer
+          readOnly: true
+        assigned_by:
+          type: integer
+          readOnly: true
+          nullable: true
+        assigned_by_name:
+          type: string
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusFdcEnum'
+          readOnly: true
+        payload:
+          readOnly: true
+        result:
+          readOnly: true
+        rerun_of:
+          type: integer
+          readOnly: true
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        actor_snapshot:
+          readOnly: true
+        skipped_users:
+          type: string
+          readOnly: true
+      required:
+      - actor_snapshot
+      - assigned_by
+      - assigned_by_name
+      - created_at
+      - id
+      - kind
+      - payload
+      - rerun_of
+      - result
+      - skipped_users
+      - status
+      - students_granted_count
+      - students_requested_count
+      - subject_summary
+    ClassPost:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        content:
+          type: string
+          maxLength: 50000
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        author:
+          type: string
+          readOnly: true
+      required:
+      - author
+      - content
+      - created_at
+      - id
+    Classroom:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 120
+        subject:
+          $ref: '#/components/schemas/Subject49dEnum'
+        lesson_days:
+          $ref: '#/components/schemas/LessonDaysEnum'
+        lesson_time:
+          type: string
+          description: 'Example: 18:00'
+          maxLength: 40
+        lesson_hours:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          description: Lesson duration in hours
+        start_date:
+          type: string
+          format: date
+          nullable: true
+        room_number:
+          type: string
+          maxLength: 30
+        telegram_chat_id:
+          type: string
+          maxLength: 100
+        max_students:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        teacher:
+          type: integer
+          nullable: true
+        teacher_details:
+          allOf:
+          - $ref: '#/components/schemas/ClassroomTeacherDetails'
+          readOnly: true
+          nullable: true
+        join_code:
+          type: string
+          readOnly: true
+        is_active:
+          type: boolean
+        schedule_summary:
+          type: string
+          description: Optional day list for ODD groups on the class page. EVEN groups
+            show EVEN; Monday/Saturday appear in the header.
+          maxLength: 240
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        members_count:
+          type: integer
+          readOnly: true
+        my_role:
+          type: string
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - join_code
+      - lesson_days
+      - members_count
+      - my_role
+      - name
+      - subject
+      - teacher_details
+    ClassroomCreate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 120
+        subject:
+          $ref: '#/components/schemas/Subject49dEnum'
+        lesson_days:
+          $ref: '#/components/schemas/LessonDaysEnum'
+        lesson_time:
+          type: string
+          description: 'Example: 18:00'
+          maxLength: 40
+        lesson_hours:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          description: Lesson duration in hours
+        start_date:
+          type: string
+          format: date
+          nullable: true
+        room_number:
+          type: string
+          maxLength: 30
+        telegram_chat_id:
+          type: string
+          maxLength: 100
+        max_students:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        teacher:
+          type: integer
+          nullable: true
+        is_active:
+          type: boolean
+        schedule_summary:
+          type: string
+          description: Optional day list for ODD groups on the class page. EVEN groups
+            show EVEN; Monday/Saturday appear in the header.
+          maxLength: 240
+        join_code:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - join_code
+      - lesson_days
+      - name
+      - subject
+    ClassroomTeacherDetails:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+          format: email
+        username:
+          type: string
+          nullable: true
+        first_name:
+          type: string
+        last_name:
+          type: string
+      required:
+      - email
+      - id
+    CurrentStateEnum:
+      enum:
+      - NOT_STARTED
+      - MODULE_1_ACTIVE
+      - MODULE_1_SUBMITTED
+      - MODULE_2_ACTIVE
+      - MODULE_2_SUBMITTED
+      - SCORING
+      - COMPLETED
+      - ABANDONED
+      type: string
+      description: |-
+        * `NOT_STARTED` - Not started
+        * `MODULE_1_ACTIVE` - Module 1 active
+        * `MODULE_1_SUBMITTED` - Module 1 submitted
+        * `MODULE_2_ACTIVE` - Module 2 active
+        * `MODULE_2_SUBMITTED` - Module 2 submitted
+        * `SCORING` - Scoring
+        * `COMPLETED` - Completed
+        * `ABANDONED` - Abandoned
+    EnginePhaseEnum:
+      enum:
+      - pending
+      - active
+      - scoring
+      - completed
+      - abandoned
+      - other
+      type: string
+      description: |-
+        * `pending` - pending
+        * `active` - active
+        * `scoring` - scoring
+        * `completed` - completed
+        * `abandoned` - abandoned
+        * `other` - other
+    ExamAttemptModuleDetail:
+      type: object
+      description: Serialized ``current_module_details`` payload (questions + timings)
+        for runners / status.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        module_order:
+          allOf:
+          - $ref: '#/components/schemas/ModuleOrderEnum'
+          minimum: -9223372036854775808
+          maximum: 9223372036854775807
+        time_limit_minutes:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+          readOnly: true
+      required:
+      - id
+      - module_order
+      - questions
+      - time_limit_minutes
+    ExamDateOption:
+      type: object
+      description: Full fields for admin CRUD.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        exam_date:
+          type: string
+          format: date
+        label:
+          type: string
+          maxLength: 200
+        is_active:
+          type: boolean
+        sort_order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - exam_date
+      - id
+    ExamDateOptionPublic:
+      type: object
+      description: Active options shown to students (dropdown).
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        exam_date:
+          type: string
+          format: date
+        label:
+          type: string
+          maxLength: 200
+      required:
+      - exam_date
+      - id
+    FormTypeEnum:
+      enum:
+      - INTERNATIONAL
+      - US
+      type: string
+      description: |-
+        * `INTERNATIONAL` - International Form
+        * `US` - US Form
+    GradingEnum:
+      enum:
+      - pending
+      type: string
+      description: '* `pending` - Pending'
+    GradingStatusEnum:
+      enum:
+      - pending
+      - processing
+      - completed
+      - failed
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `processing` - Processing
+        * `completed` - Completed
+        * `failed` - Failed
+    Kind5b0Enum:
+      enum:
+      - MOCK_SAT
+      - MIDTERM
+      type: string
+      description: |-
+        * `MOCK_SAT` - Full SAT mock (Reading & Writing + Math)
+        * `MIDTERM` - Midterm (custom time, 1–2 modules, one subject)
+    Kind69fEnum:
+      enum:
+      - pastpaper
+      - timed_mock
+      - mixed
+      type: string
+      description: |-
+        * `pastpaper` - Pastpaper library
+        * `timed_mock` - Timed mock
+        * `mixed` - Mixed
+    LessonDaysEnum:
+      enum:
+      - ODD
+      - EVEN
+      type: string
+      description: |-
+        * `ODD` - Odd days
+        * `EVEN` - Even days
+    MidtermSubjectEnum:
+      enum:
+      - READING_WRITING
+      - MATH
+      type: string
+      description: |-
+        * `READING_WRITING` - Reading & Writing
+        * `MATH` - Math
+    MockExam:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          description: Timed diagnostic mock (staff-authored). Not built from pastpaper
+            practice items.
+          maxLength: 200
+        practice_date:
+          type: string
+          format: date
+          nullable: true
+        is_active:
+          type: boolean
+        is_published:
+          type: boolean
+          description: When True, students with portal access see this timed mock.
+            Pastpaper practice uses separate standalone tests.
+        published_at:
+          type: string
+          format: date-time
+          nullable: true
+        kind:
+          $ref: '#/components/schemas/Kind5b0Enum'
+        midterm_subject:
+          $ref: '#/components/schemas/MidtermSubjectEnum'
+        midterm_module_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        midterm_module1_minutes:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        midterm_module2_minutes:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        tests:
+          type: array
+          items:
+            $ref: '#/components/schemas/PracticeTest'
+          readOnly: true
+      required:
+      - id
+      - tests
+      - title
+    ModuleList:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        module_order:
+          allOf:
+          - $ref: '#/components/schemas/ModuleOrderEnum'
+          minimum: -9223372036854775808
+          maximum: 9223372036854775807
+        time_limit_minutes:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+      required:
+      - id
+      - module_order
+      - time_limit_minutes
+    ModuleOrderEnum:
+      enum:
+      - 1
+      - 2
+      type: integer
+      description: |-
+        * `1` - Module 1
+        * `2` - Module 2
+    MyTokenObtainPair:
+      type: object
+      properties:
+        email:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - email
+      - password
+    NullEnum:
+      enum:
+      - null
+    PastpaperPackBrief:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          description: Pack title shown on student practice cards.
+          maxLength: 255
+        practice_date:
+          type: string
+          format: date
+          nullable: true
+        label:
+          type: string
+          description: e.g. A, B — shared by sections in this pack.
+          maxLength: 10
+        form_type:
+          $ref: '#/components/schemas/FormTypeEnum'
+      required:
+      - id
+    PatchedAdminMockExam:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          description: Timed diagnostic mock (staff-authored). Not built from pastpaper
+            practice items.
+          maxLength: 200
+        practice_date:
+          type: string
+          format: date
+          nullable: true
+        is_active:
+          type: boolean
+        is_published:
+          type: boolean
+          readOnly: true
+          description: When True, students with portal access see this timed mock.
+            Pastpaper practice uses separate standalone tests.
+        published_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        kind:
+          $ref: '#/components/schemas/Kind5b0Enum'
+        midterm_subject:
+          $ref: '#/components/schemas/MidtermSubjectEnum'
+        midterm_module_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        midterm_module1_minutes:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        midterm_module2_minutes:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        midterm_target_question_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          description: 0 = no fixed target. Otherwise planner cap for total questions
+            across modules.
+        tests:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminPracticeTest'
+          readOnly: true
+        publish_ready:
+          type: string
+          readOnly: true
+        publish_block_reason:
+          type: string
+          readOnly: true
+    PatchedAdminModule:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        module_order:
+          allOf:
+          - $ref: '#/components/schemas/ModuleOrderEnum'
+          minimum: -9223372036854775808
+          maximum: 9223372036854775807
+        time_limit_minutes:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+    PatchedAdminPastpaperPack:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          description: Pack title shown on student practice cards.
+          maxLength: 255
+        practice_date:
+          type: string
+          format: date
+          nullable: true
+        label:
+          type: string
+          description: e.g. A, B — shared by sections in this pack.
+          maxLength: 10
+        form_type:
+          $ref: '#/components/schemas/FormTypeEnum'
+        sections:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminPracticeTest'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedAdminPracticeTest:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          description: Pastpaper / practice test name (shown in admin and student
+            lists).
+          maxLength: 255
+        practice_date:
+          type: string
+          format: date
+          nullable: true
+          description: Optional official/exam date shown on student practice cards.
+        subject:
+          type: string
+        label:
+          type: string
+          description: e.g., A, B, C, D
+          maxLength: 10
+        form_type:
+          $ref: '#/components/schemas/FormTypeEnum'
+        mock_exam:
+          type: integer
+          readOnly: true
+          nullable: true
+          description: NULL = pastpaper / practice library. If set, this row is a
+            mock-only section (staff-built under that mock, never linked from pastpapers).
+        pastpaper_pack:
+          type: integer
+          nullable: true
+        modules:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminModule'
+          readOnly: true
+        assigned_users:
+          type: array
+          items:
+            type: integer
+    PatchedAdminQuestion:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        module_id:
+          type: integer
+          readOnly: true
+        practice_test_id:
+          type: integer
+          readOnly: true
+        question_type:
+          $ref: '#/components/schemas/QuestionTypeE1eEnum'
+        question_text:
+          type: string
+        question_prompt:
+          type: string
+          description: Secondary text displayed above answer choices.
+        question_image:
+          type: string
+          format: uri
+          nullable: true
+        is_math_input:
+          type: boolean
+        correct_answer:
+          type: string
+        score:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -9223372036854775808
+          format: int64
+          description: Score weight for this question
+        explanation:
+          type: string
+        order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        option_a:
+          type: string
+        option_b:
+          type: string
+        option_c:
+          type: string
+        option_d:
+          type: string
+        option_a_image:
+          type: string
+          format: uri
+          nullable: true
+        option_b_image:
+          type: string
+          format: uri
+          nullable: true
+        option_c_image:
+          type: string
+          format: uri
+          nullable: true
+        option_d_image:
+          type: string
+          format: uri
+          nullable: true
+        clear_question_image:
+          type: boolean
+          writeOnly: true
+        clear_option_a_image:
+          type: boolean
+          writeOnly: true
+        clear_option_b_image:
+          type: boolean
+          writeOnly: true
+        clear_option_c_image:
+          type: boolean
+          writeOnly: true
+        clear_option_d_image:
+          type: boolean
+          writeOnly: true
+    PatchedAssignment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        instructions:
+          type: string
+        due_at:
+          type: string
+          format: date-time
+          nullable: true
+        mock_exam:
+          type: integer
+          nullable: true
+        practice_test:
+          type: integer
+          nullable: true
+        pastpaper_pack:
+          type: integer
+          nullable: true
+        practice_test_ids:
+          nullable: true
+        practice_scope:
+          allOf:
+          - $ref: '#/components/schemas/PracticeScopeEnum'
+          default: BOTH
+        practice_bundle_tests:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssignmentPracticeBundleTest'
+          readOnly: true
+        locks_file_upload:
+          type: boolean
+          readOnly: true
+        assessment_homework:
+          allOf:
+          - $ref: '#/components/schemas/AssignmentAssessmentHomework'
+          readOnly: true
+          nullable: true
+        module:
+          type: integer
+          nullable: true
+        external_url:
+          type: string
+        attachment_file:
+          type: string
+          format: uri
+          nullable: true
+        attachment_file_url:
+          type: string
+          format: uri
+          readOnly: true
+          nullable: true
+        attachment_urls:
+          type: array
+          items:
+            type: string
+            format: uri
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/AssignmentCreatedBy'
+          readOnly: true
+        submissions_count:
+          type: integer
+          readOnly: true
+    PatchedClassPost:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        content:
+          type: string
+          maxLength: 50000
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        author:
+          type: string
+          readOnly: true
+    PatchedClassroomCreate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 120
+        subject:
+          $ref: '#/components/schemas/Subject49dEnum'
+        lesson_days:
+          $ref: '#/components/schemas/LessonDaysEnum'
+        lesson_time:
+          type: string
+          description: 'Example: 18:00'
+          maxLength: 40
+        lesson_hours:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          description: Lesson duration in hours
+        start_date:
+          type: string
+          format: date
+          nullable: true
+        room_number:
+          type: string
+          maxLength: 30
+        telegram_chat_id:
+          type: string
+          maxLength: 100
+        max_students:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        teacher:
+          type: integer
+          nullable: true
+        is_active:
+          type: boolean
+        schedule_summary:
+          type: string
+          description: Optional day list for ODD groups on the class page. EVEN groups
+            show EVEN; Monday/Saturday appear in the header.
+          maxLength: 240
+        join_code:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedExamDateOption:
+      type: object
+      description: Full fields for admin CRUD.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        exam_date:
+          type: string
+          format: date
+        label:
+          type: string
+          maxLength: 200
+        is_active:
+          type: boolean
+        sort_order:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        username:
+          type: string
+          nullable: true
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        phone_number:
+          type: string
+          nullable: true
+          description: E.164-style or local digits; optional, unique when set (e.g.
+            for Telegram users).
+          maxLength: 20
+        role:
+          type: string
+        subject:
+          type: string
+          nullable: true
+        class_teacher_eligible:
+          type: string
+          readOnly: true
+        bulk_assign_profile:
+          type: string
+          readOnly: true
+        is_admin:
+          type: boolean
+          writeOnly: true
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        is_frozen:
+          type: boolean
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+        password:
+          type: string
+          writeOnly: true
+    PatchedUserMe:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        username:
+          type: string
+          nullable: true
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        phone_number:
+          type: string
+          nullable: true
+          description: E.164-style or local digits; optional, unique when set (e.g.
+            for Telegram users).
+          maxLength: 20
+        is_frozen:
+          type: boolean
+          readOnly: true
+        is_admin:
+          type: boolean
+          readOnly: true
+        telegram_linked:
+          type: boolean
+          readOnly: true
+        profile_image:
+          type: string
+          format: uri
+          nullable: true
+        profile_image_url:
+          type: string
+          format: uri
+          readOnly: true
+          nullable: true
+        sat_exam_date:
+          type: string
+          format: date
+          nullable: true
+          description: Planned SAT exam date
+        target_score:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+          description: Target total SAT score (400–1600)
+        last_mock_result:
+          allOf:
+          - $ref: '#/components/schemas/UserMeLastMockResult'
+          readOnly: true
+          nullable: true
+        clear_profile_image:
+          type: boolean
+          writeOnly: true
+        role:
+          type: string
+          readOnly: true
+        subject:
+          readOnly: true
+          nullable: true
+          description: |-
+            Required for **teacher** (math or english). Must be null for admin, test_admin, super_admin, and students.
+
+            * `math` - Math
+            * `english` - English
+          oneOf:
+          - $ref: '#/components/schemas/Subject0bfEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        permissions:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        last_password_change:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: Set when the user changes password via API (adaptive security).
+        security_step_up_active:
+          type: boolean
+          readOnly: true
+        has_recent_security_alerts:
+          type: boolean
+          readOnly: true
+    PracticeScopeEnum:
+      enum:
+      - BOTH
+      - ENGLISH
+      - MATH
+      type: string
+      description: |-
+        * `BOTH` - Both (English & Math)
+        * `ENGLISH` - English (Reading & Writing) only
+        * `MATH` - Math only
+    PracticeTest:
+      type: object
+      description: 'Student practice library: past papers only (mock_exam_id must
+        be null for /exams/ list).'
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          description: Pastpaper / practice test name (shown in admin and student
+            lists).
+          maxLength: 255
+        practice_date:
+          type: string
+          format: date
+          nullable: true
+          description: Optional official/exam date shown on student practice cards.
+        subject:
+          type: string
+        label:
+          type: string
+          description: e.g., A, B, C, D
+          maxLength: 10
+        form_type:
+          $ref: '#/components/schemas/FormTypeEnum'
+        modules:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModuleList'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        pastpaper_pack:
+          allOf:
+          - $ref: '#/components/schemas/PastpaperPackBrief'
+          readOnly: true
+          nullable: true
+        mock_exam_id:
+          type: integer
+          readOnly: true
+          nullable: true
+      required:
+      - created_at
+      - id
+      - mock_exam_id
+      - modules
+      - pastpaper_pack
+      - subject
+    Question:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        question_type:
+          $ref: '#/components/schemas/QuestionTypeE1eEnum'
+        question_text:
+          type: string
+        question_prompt:
+          type: string
+          description: Secondary text displayed above answer choices.
+        question_image:
+          type: string
+          format: uri
+          nullable: true
+        is_math_input:
+          type: boolean
+        option_a_image:
+          type: string
+          format: uri
+          nullable: true
+        option_b_image:
+          type: string
+          format: uri
+          nullable: true
+        option_c_image:
+          type: string
+          format: uri
+          nullable: true
+        option_d_image:
+          type: string
+          format: uri
+          nullable: true
+      required:
+      - id
+      - question_text
+      - question_type
+    QuestionTypeE1eEnum:
+      enum:
+      - MATH
+      - READING
+      - WRITING
+      type: string
+      description: |-
+        * `MATH` - Math
+        * `READING` - Reading
+        * `WRITING` - Writing
+    SaveAnswer:
+      type: object
+      properties:
+        attempt_id:
+          type: integer
+        question_id:
+          type: integer
+        answer:
+          nullable: true
+        client_seq:
+          type: integer
+          minimum: 0
+        answered_at:
+          type: string
+          format: date-time
+      required:
+      - attempt_id
+      - question_id
+    SaveAnswerStaleWrite:
+      type: object
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+        server_client_seq:
+          type: integer
+        answer_id:
+          type: integer
+      required:
+      - answer_id
+      - code
+      - detail
+      - server_client_seq
+    SaveAnswerStored:
+      type: object
+      properties:
+        answer_id:
+          type: integer
+      required:
+      - answer_id
+    StartAttempt:
+      type: object
+      properties:
+        assignment_id:
+          type: integer
+      required:
+      - assignment_id
+    StatusFdcEnum:
+      enum:
+      - pending
+      - processing
+      - delivered
+      - completed
+      - failed
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `processing` - Processing
+        * `delivered` - Delivered
+        * `completed` - Completed
+        * `failed` - Failed
+    Subject0bfEnum:
+      enum:
+      - math
+      - english
+      type: string
+      description: |-
+        * `math` - Math
+        * `english` - English
+    Subject49dEnum:
+      enum:
+      - ENGLISH
+      - MATH
+      type: string
+      description: |-
+        * `ENGLISH` - English
+        * `MATH` - Math
+    Submission:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/SubmissionStatusEnum'
+        revision:
+          type: integer
+          readOnly: true
+        return_note:
+          type: string
+          readOnly: true
+          description: Visible to student when status is RETURNED.
+        returned_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubmissionFile'
+          readOnly: true
+        attempt:
+          type: string
+          readOnly: true
+        submitted_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        student:
+          type: string
+          readOnly: true
+        review:
+          type: string
+          readOnly: true
+        workflow_status:
+          type: string
+          readOnly: true
+      required:
+      - attempt
+      - files
+      - id
+      - return_note
+      - returned_at
+      - review
+      - revision
+      - student
+      - submitted_at
+      - updated_at
+      - workflow_status
+    SubmissionFile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        url:
+          type: string
+          readOnly: true
+        file_name:
+          type: string
+          readOnly: true
+        file_type:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - file_name
+      - file_type
+      - id
+      - url
+    SubmissionStatusEnum:
+      enum:
+      - DRAFT
+      - SUBMITTED
+      - REVIEWED
+      - RETURNED
+      type: string
+      description: |-
+        * `DRAFT` - Draft
+        * `SUBMITTED` - Submitted
+        * `REVIEWED` - Reviewed
+        * `RETURNED` - Returned for revision
+    SubmitAttempt:
+      type: object
+      properties:
+        attempt_id:
+          type: integer
+      required:
+      - attempt_id
+    TestAttempt:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        practice_test:
+          type: integer
+        practice_test_details:
+          allOf:
+          - $ref: '#/components/schemas/AttemptPracticeTestDetails'
+          readOnly: true
+        student:
+          type: integer
+          readOnly: true
+        student_details:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        started_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        submitted_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        current_module:
+          type: integer
+          readOnly: true
+          nullable: true
+        current_module_details:
+          allOf:
+          - $ref: '#/components/schemas/ExamAttemptModuleDetail'
+          nullable: true
+          readOnly: true
+        current_module_start_time:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        current_state:
+          allOf:
+          - $ref: '#/components/schemas/CurrentStateEnum'
+          readOnly: true
+          default: NOT_STARTED
+        module_1_started_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        module_1_submitted_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        module_2_started_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        module_2_submitted_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        scoring_started_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        completed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        version_number:
+          type: integer
+          readOnly: true
+        is_completed:
+          type: boolean
+          readOnly: true
+          default: false
+        is_expired:
+          type: boolean
+          readOnly: true
+        score:
+          type: integer
+          readOnly: true
+          nullable: true
+        completed_modules:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+        module_results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttemptModuleResultsItem'
+          nullable: true
+          readOnly: true
+        server_now:
+          type: string
+          format: date-time
+          readOnly: true
+        current_module_saved_answers:
+          type: object
+          additionalProperties:
+            nullable: true
+          nullable: true
+          readOnly: true
+        current_module_flagged_questions:
+          type: array
+          items:
+            type: integer
+          nullable: true
+          readOnly: true
+        remaining_seconds:
+          type: integer
+          nullable: true
+          readOnly: true
+        module_duration_seconds:
+          type: integer
+          nullable: true
+          readOnly: true
+        module_started_at:
+          type: string
+          format: date-time
+          nullable: true
+          readOnly: true
+        active_module_order:
+          type: integer
+          nullable: true
+          readOnly: true
+        can_submit:
+          type: boolean
+          readOnly: true
+        can_resume:
+          type: boolean
+          readOnly: true
+        results_ready:
+          type: boolean
+          readOnly: true
+        engine_phase:
+          allOf:
+          - $ref: '#/components/schemas/EnginePhaseEnum'
+          readOnly: true
+        scoring_notice:
+          type: string
+          nullable: true
+          readOnly: true
+      required:
+      - active_module_order
+      - can_resume
+      - can_submit
+      - completed_at
+      - completed_modules
+      - current_module
+      - current_module_details
+      - current_module_flagged_questions
+      - current_module_saved_answers
+      - current_module_start_time
+      - current_state
+      - engine_phase
+      - id
+      - is_completed
+      - is_expired
+      - module_1_started_at
+      - module_1_submitted_at
+      - module_2_started_at
+      - module_2_submitted_at
+      - module_duration_seconds
+      - module_results
+      - module_started_at
+      - practice_test
+      - practice_test_details
+      - remaining_seconds
+      - results_ready
+      - score
+      - scoring_notice
+      - scoring_started_at
+      - server_now
+      - started_at
+      - student
+      - student_details
+      - submitted_at
+      - version_number
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        username:
+          type: string
+          nullable: true
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        phone_number:
+          type: string
+          nullable: true
+          description: E.164-style or local digits; optional, unique when set (e.g.
+            for Telegram users).
+          maxLength: 20
+        role:
+          type: string
+        subject:
+          type: string
+          nullable: true
+        class_teacher_eligible:
+          type: string
+          readOnly: true
+        bulk_assign_profile:
+          type: string
+          readOnly: true
+        is_admin:
+          type: boolean
+          writeOnly: true
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        is_frozen:
+          type: boolean
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - bulk_assign_profile
+      - class_teacher_eligible
+      - date_joined
+      - email
+      - id
+    UserMe:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        username:
+          type: string
+          nullable: true
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        phone_number:
+          type: string
+          nullable: true
+          description: E.164-style or local digits; optional, unique when set (e.g.
+            for Telegram users).
+          maxLength: 20
+        is_frozen:
+          type: boolean
+          readOnly: true
+        is_admin:
+          type: boolean
+          readOnly: true
+        telegram_linked:
+          type: boolean
+          readOnly: true
+        profile_image:
+          type: string
+          format: uri
+          nullable: true
+        profile_image_url:
+          type: string
+          format: uri
+          readOnly: true
+          nullable: true
+        sat_exam_date:
+          type: string
+          format: date
+          nullable: true
+          description: Planned SAT exam date
+        target_score:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+          description: Target total SAT score (400–1600)
+        last_mock_result:
+          allOf:
+          - $ref: '#/components/schemas/UserMeLastMockResult'
+          readOnly: true
+          nullable: true
+        clear_profile_image:
+          type: boolean
+          writeOnly: true
+        role:
+          type: string
+          readOnly: true
+        subject:
+          readOnly: true
+          nullable: true
+          description: |-
+            Required for **teacher** (math or english). Must be null for admin, test_admin, super_admin, and students.
+
+            * `math` - Math
+            * `english` - English
+          oneOf:
+          - $ref: '#/components/schemas/Subject0bfEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        permissions:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        last_password_change:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          description: Set when the user changes password via API (adaptive security).
+        security_step_up_active:
+          type: boolean
+          readOnly: true
+        has_recent_security_alerts:
+          type: boolean
+          readOnly: true
+      required:
+      - has_recent_security_alerts
+      - id
+      - is_admin
+      - is_frozen
+      - last_mock_result
+      - last_password_change
+      - permissions
+      - profile_image_url
+      - role
+      - security_step_up_active
+      - subject
+      - telegram_linked
+    UserMeLastMockResult:
+      type: object
+      description: Shape of ``UserMeSerializer.get_last_mock_result`` (latest completed
+        practice/mock attempt).
+      properties:
+        score:
+          type: integer
+          nullable: true
+        mock_exam_title:
+          type: string
+          nullable: true
+        practice_test_subject:
+          type: string
+          nullable: true
+        completed_at:
+          type: string
+          nullable: true
+      required:
+      - score

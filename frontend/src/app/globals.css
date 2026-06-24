@@ -1,0 +1,1138 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-success-foreground: var(--success-foreground);
+
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-foreground: var(--warning-foreground);
+
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-danger-foreground: var(--danger-foreground);
+
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-info-foreground: var(--info-foreground);
+
+  --color-muted-foreground: var(--text-secondary);
+  --color-label-foreground: var(--text-label);
+  --color-surface-1: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-accent-cyan: var(--accent-cyan);
+
+  /* Legacy ds-* aliases (kept so pre-migration pages still resolve) */
+  --color-ds-primary: var(--ds-primary);
+  --color-ds-secondary: var(--ds-secondary);
+  --color-ds-accent: var(--ds-accent);
+  --color-ds-gold: var(--ds-gold);
+
+  /* Categorical chart ramp — theme-aware via CSS vars */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+
+  --shadow-card: var(--ds-shadow-sm);
+  --shadow-pop: var(--ds-shadow-md);
+  --shadow-modal: var(--ds-shadow-lg);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  /* Academic, editorial reading face. Used as the document default for
+     long-form/reading text; UI controls stay on --font-sans (see below). */
+  --font-serif: Georgia, "Times New Roman", "Noto Serif", serif;
+}
+
+/*
+  MasterSAT design system — minimal white/blue theme
+  Surfaces: bg-background | bg-card | bg-surface-2
+  Text: text-foreground | text-muted-foreground | text-label-foreground
+  Border: border-border
+*/
+:root {
+  --bg: #ffffff;
+  --surface: #f8fafc;
+  --surface-2: #f1f5f9;
+  --surface-3: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-label: #64748b;
+  --border-subtle: rgba(15, 23, 42, 0.08);
+  --border-strong: rgba(15, 23, 42, 0.16);
+  --accent-cyan: #0ea5e9;
+  --overlay-scrim: rgba(15, 23, 42, 0.45);
+
+  --background: var(--bg);
+  --foreground: var(--text-primary);
+  --card: var(--surface);
+  --border: var(--border-subtle);
+
+  /* Brand */
+  --primary: #2a68c0;
+  --primary-hover: #21539e;
+  --primary-soft: rgba(42, 104, 192, 0.10);
+  --primary-foreground: #ffffff;
+
+  --accent: #0ea5e9;
+  --accent-soft: rgba(14, 165, 233, 0.12);
+  --accent-foreground: #ffffff;
+
+  /* Semantic — growth-oriented usage; never punishing copy */
+  --success: #059669;
+  --success-soft: #ecfdf5;
+  --success-foreground: #047857;
+
+  --warning: #d97706;
+  --warning-soft: #fffbeb;
+  --warning-foreground: #b45309;
+
+  --danger: #dc2626;
+  --danger-soft: #fef2f2;
+  --danger-foreground: #b91c1c;
+
+  --info: #0284c7;
+  --info-soft: #f0f9ff;
+  --info-foreground: #0369a1;
+
+  --muted: var(--text-secondary);
+  --ring: rgba(42, 104, 192, 0.40);
+
+  /* Chart ramp */
+  --chart-1: #2a68c0;
+  --chart-2: #0ea5e9;
+  --chart-3: #059669;
+  --chart-4: #d97706;
+  --chart-5: #db2777;
+  --chart-6: #7c3aed;
+  --chart-grid: rgba(15, 23, 42, 0.08);
+  --chart-axis: #64748b;
+
+  /* Legacy ds-* aliases — repointed onto the new system */
+  --ds-primary: var(--primary);
+  --ds-primary-hover: var(--primary-hover);
+  --ds-primary-soft: var(--primary-soft);
+  --ds-gold: var(--primary);
+  --ds-gold-bright: var(--accent);
+  --ds-gold-soft: var(--primary-soft);
+  --ds-secondary: var(--accent);
+  --ds-secondary-soft: var(--accent-soft);
+  --ds-accent: var(--accent);
+  --ds-accent-amber: var(--warning);
+  --gold-rail: transparent;
+  --gold-rail-soft: transparent;
+  --gold-rail-glow: transparent;
+  --ds-surface-0: var(--background);
+  --ds-surface-1: var(--card);
+  --ds-surface-2: var(--surface-2);
+  --ds-border-strong: var(--border-strong);
+  --ds-text-muted: var(--text-secondary);
+  --ds-radius-sm: 0.5rem;
+  --ds-radius-md: 0.75rem;
+  --ds-radius-lg: 1rem;
+  --ds-radius-xl: 1.25rem;
+  --ds-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.05);
+  --ds-shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --ds-shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.12);
+  --ds-transition: 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ds-transition-fast: 100ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ds-ease-premium: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.dark {
+  --bg: #0b1120;
+  --surface: #111827;
+  --surface-2: #1e293b;
+  --surface-3: #334155;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-label: #94a3b8;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --accent-cyan: #38bdf8;
+  --overlay-scrim: rgba(2, 6, 23, 0.7);
+
+  --background: var(--bg);
+  --foreground: var(--text-primary);
+  --card: var(--surface);
+  --border: var(--border-subtle);
+
+  --primary: #4b5ce6;
+  --primary-hover: #6e7cf2;
+  --primary-soft: rgba(75, 92, 230, 0.18);
+  --primary-foreground: #ffffff;
+
+  --accent: #38bdf8;
+  --accent-soft: rgba(56, 189, 248, 0.16);
+  --accent-foreground: #04293b;
+
+  --success: #34d399;
+  --success-soft: rgba(52, 211, 153, 0.14);
+  --success-foreground: #6ee7b7;
+
+  --warning: #fbbf24;
+  --warning-soft: rgba(251, 191, 36, 0.14);
+  --warning-foreground: #fcd34d;
+
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.14);
+  --danger-foreground: #fca5a5;
+
+  --info: #38bdf8;
+  --info-soft: rgba(56, 189, 248, 0.14);
+  --info-foreground: #7dd3fc;
+
+  --muted: var(--text-secondary);
+  --ring: rgba(75, 92, 230, 0.5);
+
+  --chart-1: #4b5ce6;
+  --chart-2: #38bdf8;
+  --chart-3: #34d399;
+  --chart-4: #fbbf24;
+  --chart-5: #f472b6;
+  --chart-6: #a78bfa;
+  --chart-grid: rgba(255, 255, 255, 0.08);
+  --chart-axis: #94a3b8;
+
+  --ds-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --ds-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --ds-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  /* Georgia-led serif gives the platform an academic, reading-oriented feel.
+     Slightly taller line-height aids long-form passage reading. */
+  font-family: var(--font-serif);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Keep interactive controls on the sans stack: serif form controls change
+   metrics/density and read as less "UI". Buttons, inputs, the question map,
+   admin-dense surfaces, etc. that opt into `font-sans` are unaffected by the
+   serif body default. KaTeX (.katex) and the Django admin set their own fonts,
+   so math alignment and admin density are untouched. */
+button,
+input,
+select,
+textarea,
+optgroup {
+  font-family: var(--font-sans);
+}
+
+/* Typography scale */
+.ds-title-xl {
+  font-size: clamp(1.875rem, 4vw, 2.75rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--foreground);
+}
+
+.ds-section-title {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-label);
+}
+
+.ds-body {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.ds-caption {
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+/* Focus ring (a11y) */
+.ds-focus {
+  outline: none;
+}
+.ds-focus:focus-visible {
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--primary);
+}
+
+@keyframes ds-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes ds-modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.ds-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--surface-2) 0%,
+    var(--card) 50%,
+    var(--surface-2) 100%
+  );
+  background-size: 200% 100%;
+  animation: ds-shimmer 1.4s ease-in-out infinite;
+}
+
+.dark .ds-skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  background-size: 200% 100%;
+}
+
+/* App background — solid, no gradients */
+.app-bg {
+  background: var(--background);
+}
+
+.dark .app-bg {
+  background: var(--background);
+}
+
+/* Surface — solid card with subtle border */
+.surface {
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: var(--ds-shadow-sm);
+}
+
+/* Panel — rounded card */
+.panel {
+  border-radius: var(--ds-radius-lg);
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: var(--ds-shadow-sm);
+}
+
+.panel-soft {
+  border-radius: var(--ds-radius-md);
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: var(--ds-shadow-sm);
+}
+
+/* Cards */
+.ui-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: var(--ds-shadow-sm);
+  transition: box-shadow 150ms ease, border-color 150ms ease;
+}
+
+.ui-card:hover {
+  border-color: rgba(42, 104, 192, 0.25);
+  box-shadow: var(--ds-shadow-md);
+}
+
+.dark .ui-card:hover {
+  border-color: rgba(75, 92, 230, 0.3);
+}
+
+/* Inputs */
+.ui-input,
+.input-modern {
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+}
+
+.ui-input::placeholder,
+.input-modern::placeholder {
+  color: var(--text-label);
+}
+
+.ui-input:focus,
+.input-modern:focus {
+  border-color: var(--primary);
+  outline: none;
+}
+
+/* Buttons — solid, no gradients */
+.ms-btn-primary,
+.btn-primary {
+  transition: background-color 150ms ease, box-shadow 150ms ease, transform 100ms ease;
+}
+.ms-btn-primary:hover:not(:disabled):not([aria-disabled="true"]),
+.btn-primary:hover:not(:disabled):not([aria-disabled="true"]) {
+  filter: brightness(1.05);
+}
+.ms-btn-primary:active:not(:disabled):not([aria-disabled="true"]),
+.btn-primary:active:not(:disabled):not([aria-disabled="true"]) {
+  transform: scale(0.98);
+  transition-duration: 0.08s;
+}
+
+.ms-btn-secondary,
+.btn-secondary {
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+.ms-btn-secondary:hover:not(:disabled):not([aria-disabled="true"]),
+.btn-secondary:hover:not(:disabled):not([aria-disabled="true"]) {
+  background-color: var(--surface-2);
+}
+.ms-btn-secondary:active:not(:disabled):not([aria-disabled="true"]),
+.btn-secondary:active:not(:disabled):not([aria-disabled="true"]) {
+  transform: scale(0.99);
+}
+
+.ms-btn-ghost {
+  transition: background-color 150ms ease, color 150ms ease;
+}
+.ms-btn-ghost:hover:not(:disabled):not([aria-disabled="true"]) {
+  background-color: var(--surface-2);
+}
+.ms-btn-ghost:active:not(:disabled):not([aria-disabled="true"]) {
+  transform: scale(0.98);
+}
+
+.ms-btn-destructive {
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+.ms-btn-destructive:hover:not(:disabled):not([aria-disabled="true"]) {
+  filter: brightness(1.05);
+}
+.ms-btn-destructive:active:not(:disabled):not([aria-disabled="true"]) {
+  transform: scale(0.98);
+}
+
+/* Icon buttons */
+.ms-icon-btn {
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+.ms-icon-btn:hover:not(:disabled):not([aria-disabled="true"]) {
+  background-color: var(--surface-2);
+}
+.ms-icon-btn:active:not(:disabled):not([aria-disabled="true"]) {
+  transform: scale(0.96);
+  transition-duration: 0.08s;
+}
+
+.ms-icon-btn-ghost {
+  transition: background-color 150ms ease;
+}
+.ms-icon-btn-ghost:hover:not(:disabled):not([aria-disabled="true"]) {
+  background-color: var(--surface-2);
+}
+.ms-icon-btn-ghost:active:not(:disabled):not([aria-disabled="true"]) {
+  transform: scale(0.94);
+}
+
+/* Primary button fill */
+.ms-cta-fill,
+.btn-primary {
+  color: #fff;
+  background: var(--primary);
+  border: 1px solid transparent;
+  box-shadow: 0 1px 3px rgba(42, 104, 192, 0.3);
+}
+.ms-cta-fill:hover,
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  border-radius: 0.625rem;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.9375rem;
+  line-height: 1.25;
+  font-weight: 600;
+}
+
+/* Math CTA — same as primary for simplicity */
+.ms-cta-math {
+  background: var(--primary);
+  color: #fff;
+  border: 1px solid transparent;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-foreground bg-card border border-border hover:bg-surface-2;
+}
+
+.input-modern {
+  @apply w-full rounded-lg px-4 py-2.5 text-sm transition-all;
+}
+
+.title-xl {
+  @apply text-4xl md:text-5xl font-extrabold tracking-tight text-foreground;
+}
+
+.eyebrow {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--primary);
+}
+
+/* Hero shell — simple bordered card */
+.hero-shell {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--ds-radius-xl);
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: var(--ds-shadow-sm);
+}
+
+.hero-shell::before {
+  display: none;
+}
+
+.dark .hero-shell {
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: var(--ds-shadow-sm);
+}
+
+.dark .hero-shell::before {
+  display: none;
+}
+
+/* Metric tile — clean card */
+.metric-tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--ds-radius-md);
+  border: 1px solid var(--border);
+  background: var(--card);
+  box-shadow: var(--ds-shadow-sm);
+  transition: box-shadow 150ms ease, border-color 150ms ease;
+}
+
+.metric-tile:hover {
+  border-color: rgba(42, 104, 192, 0.2);
+  box-shadow: var(--ds-shadow-md);
+}
+
+.metric-tile::after {
+  display: none;
+}
+
+.dark .metric-tile {
+  border: 1px solid var(--border);
+  background: var(--card);
+  box-shadow: var(--ds-shadow-sm);
+}
+
+.dark .metric-tile:hover {
+  border-color: rgba(75, 92, 230, 0.25);
+  box-shadow: var(--ds-shadow-md);
+}
+
+.dark .metric-tile::after {
+  display: none;
+}
+
+/* Chip */
+.neo-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(42, 104, 192, 0.2);
+  background: rgba(42, 104, 192, 0.06);
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--primary);
+}
+
+/* Text highlights */
+.persistent-highlight {
+  background-color: #fef08a;
+  color: #000000;
+  padding: 1px 2px;
+  border-radius: 3px;
+  border-bottom: 2px solid #facc15;
+}
+
+.annotate-mode *::selection {
+  background-color: #fde047;
+  color: #000000;
+}
+
+/* Assessment highlighter mode — show the marker cursor and yellow selection */
+.ms-highlighter-cursor,
+.ms-highlighter-cursor * {
+  cursor: text;
+}
+.ms-highlighter-cursor *::selection {
+  background-color: #fde047;
+  color: #000000;
+}
+
+/* Prevent fill-in-the-blank underscores from breaking onto two lines.
+   `_____` reads as a single token to a reader, so keep it together. */
+.ms-no-break-underscores {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+.ms-no-break-underscores * {
+  /* Force any run of 2+ underscores to stay on one line */
+  white-space: normal;
+}
+
+/* Fill-in-the-blank rendering for English assessment questions.
+   Authored runs of underscores (`____`) become a real underline blank: the
+   underscore glyphs are hidden (transparent) but keep their width, and a solid
+   baseline rule of that width is drawn. Reads as a proper blank on desktop and
+   mobile instead of a row of underscore characters. */
+.ms-blank {
+  display: inline-block;
+  min-width: 2.5em;
+  /* Hide the underscore glyphs but keep their width as the blank length. */
+  color: transparent;
+  /* Explicit underline color — NOT currentColor, which is transparent here and
+     made the rule invisible (the blank showed as empty space). */
+  border-bottom: 2px solid #334155;
+  line-height: 1;
+  margin: 0 2px;
+  vertical-align: baseline;
+  /* keep the blank on one line so it never wraps mid-rule */
+  white-space: nowrap;
+  /* underscores already sit at the baseline; nudge the rule down slightly so
+     it reads as an empty line rather than a strike under text */
+  transform: translateY(0.15em);
+}
+
+/* Glass — simplified, no blur */
+.glass {
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+
+.dark .glass {
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+
+/* Classroom surfaces */
+.cr-surface {
+  border-radius: var(--ds-radius-md);
+  border: 1px solid var(--border);
+  background: var(--card);
+  box-shadow: var(--ds-shadow-sm);
+}
+
+.dark .cr-surface {
+  background: var(--card);
+  box-shadow: var(--ds-shadow-sm);
+}
+
+/* Shell sidebar */
+.shell-sidebar-gold {
+  border-right-color: var(--border) !important;
+  box-shadow: none;
+}
+
+html:not(.dark) .shell-sidebar-gold {
+  box-shadow: none;
+}
+
+.cr-hero {
+  background: var(--card);
+}
+
+.dark .cr-hero {
+  background: var(--card);
+}
+
+.cr-modal-header {
+  background: var(--surface-2);
+}
+
+.dark .cr-modal-header {
+  background: var(--surface-2);
+}
+
+.cr-classroom-bg {
+  background: var(--background);
+}
+
+.dark .cr-classroom-bg {
+  background: var(--background);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-label);
+}
+
+.card-shadow {
+  box-shadow: var(--ds-shadow-sm);
+}
+
+.dark .card-shadow {
+  box-shadow: var(--ds-shadow-md);
+}
+
+.bluebook-dash {
+  height: 3px;
+  background-image: linear-gradient(to right,
+      #94a3b8 20%, transparent 20%,
+      transparent 25%,
+      #60a5fa 25%, #60a5fa 45%,
+      transparent 45%,
+      transparent 50%,
+      #2563eb 50%, #2563eb 70%,
+      transparent 70%,
+      transparent 75%,
+      #475569 75%, #475569 95%,
+      transparent 95%
+  );
+  background-size: 80px 100%;
+}
+
+.dark .bluebook-dash {
+  background-image: linear-gradient(to right,
+      #475569 20%, transparent 20%,
+      transparent 25%,
+      #60a5fa 25%, #60a5fa 45%,
+      transparent 45%,
+      transparent 50%,
+      #3b82f6 50%, #3b82f6 70%,
+      transparent 70%,
+      transparent 75%,
+      #94a3b8 75%, #94a3b8 95%,
+      transparent 95%
+  );
+}
+
+.big-dot-list {
+  list-style-type: disc;
+  margin-left: 1.25rem;
+}
+
+.big-dot-list li::marker {
+  font-size: 1.35em;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translate3d(0, -10vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 110vh, 0) rotate(540deg);
+    opacity: 0.95;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   MasterSAT 2.0 — design system layer
+   New tokens live in :root/.dark above; this section adds the
+   typography scale, motion, and a11y helpers the new components use.
+   ════════════════════════════════════════════════════════════════ */
+
+/* Surfaces driven by the new shell use the sans UI stack; the serif
+   body default is preserved for long-form reading passages. */
+.ds-app {
+  /* Reference the next/font variable directly (it's defined on <body>, not
+     :root) with a concrete fallback so the declaration is always valid —
+     keeps the new shell on the sans UI stack over the serif body default. */
+  font-family: var(--font-geist-sans, ui-sans-serif), ui-sans-serif, system-ui,
+    -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.ds-display {
+  font-size: clamp(2.25rem, 5vw, 3.25rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  color: var(--foreground);
+}
+.ds-h1 {
+  font-size: clamp(1.5rem, 2.5vw, 1.875rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--foreground);
+}
+.ds-h2 {
+  font-size: 1.375rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  color: var(--foreground);
+}
+.ds-h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  color: var(--foreground);
+}
+.ds-h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--foreground);
+}
+.ds-lead {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+.ds-small {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.ds-overline {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-label);
+}
+/* Tabular figures for metrics/scores so digits don't jitter */
+.ds-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Shared focus ring */
+.ds-ring {
+  outline: none;
+}
+.ds-ring:focus-visible {
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring);
+}
+
+/* Recharts tooltip surface */
+.ds-chart-tooltip {
+  background: var(--card);
+  border: 1px solid var(--border-strong);
+  border-radius: 0.625rem;
+  box-shadow: var(--ds-shadow-md);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8125rem;
+}
+
+@keyframes ds-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes ds-pop-in {
+  from { opacity: 0; transform: scale(0.97) translateY(6px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes ds-slide-in-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+.ds-anim-fade { animation: ds-fade-in 160ms ease both; }
+.ds-anim-pop { animation: ds-pop-in 200ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.ds-anim-slide-right { animation: ds-slide-in-right 240ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Testing Simulation — annotation marks (SAT Experience tools).
+   Colours/underline styles are set inline per-mark by
+   features/testing-simulation/tools/highlight; this only adds shared affordances. */
+mark.ts-annot {
+  color: inherit;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+/* While the highlighter is active, tint the live selection yellow so text looks
+   marked AS you drag (the real highlight lands on release). */
+.ts-annotating #ts-passage ::selection,
+.ts-annotating #ts-question ::selection,
+.ts-annotating #ts-choices ::selection {
+  background-color: #fde047;
+  color: inherit;
+}
+.ts-annotating #ts-passage ::-moz-selection,
+.ts-annotating #ts-question ::-moz-selection,
+.ts-annotating #ts-choices ::-moz-selection {
+  background-color: #fde047;
+  color: inherit;
+}
+
+/* ============================================================
+   Student Dashboard — 1:1 with provided mockup (~/Downloads/MasterSAT Dashboard.html)
+   Scoped under .dzboard so the exact mockup palette + animations
+   never leak into the rest of the app. Dark values tuned to the
+   app's dark surfaces (next-themes `.dark` on <html>).
+   ============================================================ */
+.dzboard {
+  --dz-indigo: #2a68c0;
+  --dz-indigo-deep: #21539e;
+  --dz-indigo-soft: #e7effb;
+  --dz-ink: #0f1729;
+  --dz-mute: #64748b;
+  --dz-faint: #94a3b8;
+  --dz-panel: #ffffff;
+  --dz-card: #f4f7fc;
+  --dz-border: #e7ebf3;
+  --dz-amber: #f59e0b;
+  --dz-amber-soft: rgba(245, 158, 11, 0.13);
+  font-family: var(--font-plus-jakarta), 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+.dark .dzboard {
+  --dz-indigo: #5b8def;
+  --dz-indigo-deep: #1f4f96;
+  --dz-indigo-soft: rgba(91, 141, 239, 0.16);
+  --dz-ink: #e8eef9;
+  --dz-mute: #94a3b8;
+  --dz-faint: #6b7a90;
+  --dz-panel: #1e293b;
+  --dz-card: #172033;
+  --dz-border: rgba(255, 255, 255, 0.09);
+  --dz-amber: #fbbf24;
+  --dz-amber-soft: rgba(251, 191, 36, 0.15);
+}
+
+@keyframes dz-pulseRing { 0% { box-shadow: 0 0 0 0 rgba(42,104,192,.35) } 70% { box-shadow: 0 0 0 10px rgba(42,104,192,0) } 100% { box-shadow: 0 0 0 0 rgba(42,104,192,0) } }
+@keyframes dz-floatUp { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: translateY(0) } }
+@keyframes dz-riseIn { from { opacity: 0; transform: translateY(18px) } to { opacity: 1; transform: translateY(0) } }
+@keyframes dz-popIn { 0% { opacity: 0; transform: scale(.92) translateY(8px) } 60% { transform: scale(1.02) } 100% { opacity: 1; transform: scale(1) translateY(0) } }
+@keyframes dz-spinSlow { to { transform: rotate(360deg) } }
+@keyframes dz-dayPop { 0% { transform: scale(.6) } 55% { transform: scale(1.18) } 100% { transform: scale(1) } }
+@keyframes dz-sectionIn { 0% { opacity: .25; transform: translateY(14px) scale(.992) } 100% { opacity: 1; transform: translateY(0) scale(1) } }
+@keyframes dz-rippleExpand { from { transform: translate(-50%, -50%) scale(0); opacity: .4 } to { transform: translate(-50%, -50%) scale(1); opacity: 0 } }
+@keyframes dz-navPop { 0% { transform: scale(.9) } 60% { transform: scale(1.12) } 100% { transform: scale(1) } }
+/* Click ripple for sidebar nav items — AppShell sets only left/top/width/height inline. */
+.dz-ripple { position: absolute; border-radius: 9999px; background: currentColor; opacity: .3; pointer-events: none; transform: translate(-50%, -50%) scale(0); animation: dz-rippleExpand .6s ease-out forwards; }
+
+.dzboard .dz-content { animation: dz-sectionIn .5s cubic-bezier(.22,1,.36,1) both; }
+.dzboard .dz-rise { animation: dz-riseIn .5s cubic-bezier(.22,1,.36,1) both; }
+.dzboard .dz-pop { animation: dz-popIn .45s cubic-bezier(.22,1,.36,1) both; }
+.dzboard .dz-orb { animation: dz-spinSlow 26s linear infinite; }
+.dzboard .dz-orb-rev { animation: dz-spinSlow 34s linear infinite reverse; }
+.dzboard .dz-dot { animation: dz-pulseRing 2s infinite; }
+.dzboard .dz-floatup { animation: dz-floatUp .18s ease; }
+.dzboard .dz-daypop { animation: dz-dayPop .3s cubic-bezier(.22,1,.36,1); }
+
+/* Hover lifts */
+.dzboard .dz-lift  { transition: transform .25s cubic-bezier(.22,1,.36,1), box-shadow .25s; }
+.dzboard .dz-lift:hover  { transform: translateY(-5px); box-shadow: 0 16px 32px rgba(15,23,41,.12); }
+.dzboard .dz-lift4 { transition: transform .25s cubic-bezier(.22,1,.36,1), box-shadow .25s; }
+.dzboard .dz-lift4:hover { transform: translateY(-4px); box-shadow: 0 18px 38px rgba(15,23,41,.12); }
+.dzboard .dz-scorebox { transition: transform .22s cubic-bezier(.22,1,.36,1), box-shadow .22s; }
+.dzboard .dz-scorebox:hover { transform: translateY(-5px); box-shadow: 0 14px 28px rgba(15,23,41,.1); }
+.dzboard .dz-scorebox-p:hover { transform: translateY(-5px); box-shadow: 0 16px 32px rgba(42,104,192,.26); }
+.dzboard .dz-countdown { transition: transform .25s cubic-bezier(.22,1,.36,1), box-shadow .25s; }
+.dzboard .dz-countdown:hover { transform: translateY(-5px); box-shadow: 0 22px 44px rgba(33,83,158,.4); }
+
+/* Buttons */
+.dzboard .dz-updatebtn { transition: transform .18s, box-shadow .18s, border-color .18s; }
+.dzboard .dz-updatebtn:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(15,23,41,.1); border-color: var(--dz-indigo); }
+.dzboard .dz-updatebtn:active { transform: translateY(0) scale(.97); }
+.dzboard .dz-navbtn { transition: transform .18s, background .18s, color .18s; }
+.dzboard .dz-navbtn-l:hover { transform: translateX(-2px); background: var(--dz-indigo-soft); color: var(--dz-indigo); }
+.dzboard .dz-navbtn-r:hover { transform: translateX(2px); background: var(--dz-indigo-soft); color: var(--dz-indigo); }
+.dzboard .dz-navbtn-l:active { transform: translateX(-2px) scale(.88); }
+.dzboard .dz-navbtn-r:active { transform: translateX(2px) scale(.88); }
+.dzboard .dz-joinbtn { transition: transform .18s, box-shadow .18s, gap .18s; }
+.dzboard .dz-joinbtn:hover { transform: translateY(-2px); box-shadow: 0 14px 28px rgba(42,104,192,.4); gap: 12px; }
+.dzboard .dz-joinbtn:active { transform: translateY(0) scale(.98); box-shadow: 0 6px 14px rgba(42,104,192,.5); }
+.dzboard .dz-goalopt { transition: transform .15s, background .15s, border-color .15s; }
+.dzboard .dz-goalopt:active { transform: scale(.94); }
+.dzboard .dz-lessonrow { transition: transform .2s, background .2s; }
+.dzboard .dz-lessonrow:hover { transform: translateX(4px); background: var(--dz-indigo-soft); }
+.dzboard .dz-daycell { transition: transform .15s, background .15s; }
+.dzboard .dz-daycell:hover { background: var(--dz-indigo-soft); }
+
+@media (prefers-reduced-motion: reduce) {
+  .dzboard *, .dzboard *::before, .dzboard *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; }
+}
+
+/* Dashboard responsive collapse (mockup is desktop-fixed) */
+@media (max-width: 900px) {
+  .dzboard .dz-scoregrid { grid-template-columns: 1fr !important; }
+  .dzboard .dz-calgrid { grid-template-columns: 1fr !important; }
+}
+
+/* ============================================================
+   Classes page — 1:1 with provided mockup (~/Downloads/MasterSAT Classes.html)
+   Reuses the .dzboard token scope; adds the class-card animations +
+   a 5-colour accent cycle (light hex from the mockup; dark tuned).
+   ============================================================ */
+@keyframes dz-cardIn { 0% { opacity: 0; transform: translateY(26px) scale(.94) } 100% { opacity: 1; transform: none } }
+@keyframes dz-bandShift { 0% { background-position: 0% 50% } 50% { background-position: 100% 50% } 100% { background-position: 0% 50% } }
+@keyframes dz-floatY { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-5px) } }
+
+.dzboard .dz-card {
+  background: var(--dz-panel);
+  border: 1px solid var(--acc-border);
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .22s cubic-bezier(.22,1,.36,1), box-shadow .22s, border-color .22s;
+  animation: dz-cardIn .55s cubic-bezier(.22,1,.36,1) both;
+}
+.dzboard .dz-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(15,23,41,.14); border-color: var(--acc); }
+.dzboard .dz-band {
+  position: relative; height: 92px; padding: 0 20px; display: flex; align-items: center; overflow: hidden;
+  background: linear-gradient(120deg, var(--acc-soft) 0%, var(--acc-mid) 52%, var(--acc-soft) 100%);
+  background-size: 220% 220%;
+  animation: dz-bandShift 9s ease-in-out infinite;
+}
+.dzboard .dz-tile {
+  width: 50px; height: 50px; border-radius: 15px; background: var(--dz-panel);
+  display: flex; align-items: center; justify-content: center; color: var(--acc);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--acc) 22%, transparent);
+  animation: dz-floatY 4s ease-in-out infinite;
+}
+.dzboard .dz-openbtn {
+  display: flex; align-items: center; gap: 6px; padding: 8px 15px; border-radius: 11px;
+  border: 1.5px solid var(--acc); background: transparent; color: var(--acc);
+  font-family: inherit; font-size: 13px; font-weight: 800; cursor: pointer;
+  transition: transform .16s, background .16s, color .16s, gap .16s, box-shadow .16s;
+}
+.dzboard .dz-openbtn:hover { background: var(--acc); color: #fff; gap: 10px; box-shadow: 0 8px 18px color-mix(in srgb, var(--acc) 40%, transparent); }
+.dzboard .dz-openbtn:active { transform: scale(.93); }
+.dzboard .dz-pill {
+  display: flex; align-items: center; gap: 8px; padding: 9px 15px; border-radius: 11px;
+  font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+  transition: transform .14s, background .14s, border-color .14s, color .14s;
+}
+.dzboard .dz-pill:hover { transform: translateY(-2px); }
+.dzboard .dz-pill:active { transform: scale(.95); }
+.dzboard .dz-joinbtn2 { transition: transform .18s, box-shadow .18s; }
+.dzboard .dz-joinbtn2:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(42,104,192,.4); }
+.dzboard .dz-joinbtn2:active { transform: translateY(0) scale(.97); }
+.dzboard .clip1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Accent cycle (light = exact mockup pastels) */
+.dzboard .dz-acc-0 { --acc:#2a68c0; --acc-soft:#e7effb; --acc-mid:#d4e4fb; --acc-border:#d4e4fb; }
+.dzboard .dz-acc-1 { --acc:#6d4ec7; --acc-soft:#ece6fa; --acc-mid:#ddd0f6; --acc-border:#ddd0f6; }
+.dzboard .dz-acc-2 { --acc:#0d9488; --acc-soft:#d8f1ee; --acc-mid:#c2e9e3; --acc-border:#c2e9e3; }
+.dzboard .dz-acc-3 { --acc:#e0851a; --acc-soft:#fbeed5; --acc-mid:#f7e0b6; --acc-border:#f7e0b6; }
+.dzboard .dz-acc-4 { --acc:#d6477f; --acc-soft:#fbe4ee; --acc-mid:#f6d2e1; --acc-border:#f6d2e1; }
+/* Dark: brighter accent, translucent band/border */
+.dark .dzboard .dz-acc-0 { --acc:#5b8def; --acc-soft:rgba(91,141,239,.13); --acc-mid:rgba(91,141,239,.24); --acc-border:rgba(91,141,239,.34); }
+.dark .dzboard .dz-acc-1 { --acc:#9b82e8; --acc-soft:rgba(155,130,232,.13); --acc-mid:rgba(155,130,232,.24); --acc-border:rgba(155,130,232,.34); }
+.dark .dzboard .dz-acc-2 { --acc:#2dd4bf; --acc-soft:rgba(45,212,191,.12); --acc-mid:rgba(45,212,191,.22); --acc-border:rgba(45,212,191,.32); }
+.dark .dzboard .dz-acc-3 { --acc:#fbbf24; --acc-soft:rgba(251,191,36,.12); --acc-mid:rgba(251,191,36,.22); --acc-border:rgba(251,191,36,.32); }
+.dark .dzboard .dz-acc-4 { --acc:#f472b6; --acc-soft:rgba(244,114,182,.13); --acc-mid:rgba(244,114,182,.24); --acc-border:rgba(244,114,182,.34); }
+
+/* ============================================================
+   Classes states + Assessments board + Past Papers — extends .dzboard
+   (mockups: MasterSAT Classes States / Assessments / Past Papers)
+   ============================================================ */
+.dzboard {
+  --dz-skel: #e9eef5;
+  --dz-error: #d6473a; --dz-error-soft: #fbe3df; --dz-error-border: #f3d2cd; --dz-error-bg: #fdf4f3;
+}
+.dark .dzboard {
+  --dz-skel: #1f2a3a;
+  --dz-error: #f87171; --dz-error-soft: rgba(248,113,113,.16); --dz-error-border: rgba(248,113,113,.30); --dz-error-bg: rgba(248,113,113,.07);
+}
+
+@keyframes dz-shimmer { 0% { background-position: -220px 0 } 100% { background-position: 220px 0 } }
+@keyframes dz-headIn { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
+@keyframes dz-edgePulse { 0%, 100% { opacity: 1 } 50% { opacity: .55 } }
+
+.dzboard .dz-skel {
+  background: var(--dz-skel);
+  background-image: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
+  background-size: 560px 100%; background-repeat: no-repeat;
+  animation: dz-shimmer 1.3s infinite;
+}
+.dark .dzboard .dz-skel { background-image: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent); }
+.dzboard .dz-headin { animation: dz-headIn .55s cubic-bezier(.22,1,.36,1) both; }
+.dzboard .dz-edge { animation: dz-edgePulse 3.5s ease-in-out infinite; }
+
+.dzboard .dz-statecard { transition: transform .2s cubic-bezier(.22,1,.36,1), box-shadow .2s, border-color .2s; }
+.dzboard .dz-statecard:hover { transform: translateY(-4px); box-shadow: 0 16px 32px rgba(15,23,41,.12); border-color: transparent; }
+.dzboard .dz-booklet { transition: transform .2s cubic-bezier(.22,1,.36,1), box-shadow .2s; }
+.dzboard .dz-booklet:hover { transform: translateY(-4px); box-shadow: 0 18px 38px rgba(15,23,41,.14); }
+.dzboard .dz-seg { transition: transform .14s, background .14s, color .14s; cursor: pointer; }
+.dzboard .dz-seg:hover { transform: translateY(-1px); }
+.dzboard .dz-seg:active { transform: scale(.95); }
+.dzboard .dz-secbtn { transition: border-color .18s, color .18s, transform .18s; }
+.dzboard .dz-secbtn:hover { border-color: var(--dz-indigo); color: var(--dz-indigo); }
+.dzboard .dz-actionbtn { transition: transform .15s, box-shadow .15s; }
+.dzboard .dz-actionbtn:active { transform: scale(.96); }
+
+/* Auth brand-panel floating shapes (MasterSAT Login/Register mockup) */
+@keyframes dz-floatA { 0%,100% { transform: translate(0,0) rotate(0deg) scale(1) } 50% { transform: translate(-14px,18px) rotate(8deg) scale(1.05) } }
+@keyframes dz-floatB { 0%,100% { transform: translate(0,0) rotate(24deg) scale(1) } 50% { transform: translate(12px,-16px) rotate(16deg) scale(1.06) } }
+@keyframes dz-floatC { 0%,100% { transform: translate(0,0) scale(1) } 50% { transform: translate(14px,-12px) scale(1.08) } }
+@keyframes dz-floatD { 0%,100% { transform: translate(0,0) rotate(0deg) } 50% { transform: translate(-10px,12px) rotate(20deg) } }
+@keyframes dz-drift { 0%,100% { transform: rotate(0deg) } 50% { transform: rotate(360deg) } }
+@media (prefers-reduced-motion: reduce) {
+  .authbrand * { animation-duration: .001ms !important; animation-iteration-count: 1 !important; }
+}
+
+@media (max-width: 860px) {
+  .dzboard .dz-paper { grid-template-columns: 1fr !important; }
+}

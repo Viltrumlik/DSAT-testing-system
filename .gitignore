@@ -1,0 +1,26 @@
+# Python / Django
+backend/.venv/
+__pycache__/
+*.py[cod]
+*.sqlite3
+backend/media/*
+!backend/media/.gitkeep
+.env
+backend/.env
+
+# Node / Next.js
+node_modules/
+frontend/.next/
+frontend/out/
+frontend/.env.local
+*.tsbuildinfo
+next-env.d.ts
+
+# Test / build artifacts
+coverage/
+test-results/
+playwright-report/
+
+# OS / editor
+.DS_Store
+*.log

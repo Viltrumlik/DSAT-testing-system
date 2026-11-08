@@ -150,4 +150,6 @@ DSAT-testing-system/
 
 ## License
 
-Released under the [MIT License](LICENSE).
+Proprietary. Copyright (c) 2026 Viltrumlik. All rights reserved.
+
+The source code is published for reference only. Using, copying, modifying, hosting or distributing it requires prior written permission. See [LICENSE](LICENSE).
